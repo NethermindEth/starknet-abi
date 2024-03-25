@@ -1,0 +1,32 @@
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3.12
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: poetry run isort starknet_abi/
+        language: system
+        types: [ python ]
+        require_serial: true
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: poetry run pylint starknet_abi/
+        args: [
+          '-rn',
+          '-sn',
+          '--rcfile=pyproject.toml',
+          '--disable=redefined-builtin',
+        ]
+        language: system
+        types: [ python ]
+        require_serial: true
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: 'mypy'

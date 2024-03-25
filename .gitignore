@@ -1,0 +1,13 @@
+.idea/
+
+# Venvs  -- Project & Benchmarks
+.venv/
+
+# Benchmarks
+benchmarks/.venv_*/
+benchmarks/*.json
+
+__pycache__
+
+# Docs
+_build/

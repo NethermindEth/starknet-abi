@@ -1,0 +1,92 @@
+[tool.poetry]
+name = "starknet-abi"
+version = "0.1.0"
+description = "Performant Starkent ABI Decoding Library designed for Data Indexing"
+authors = ["Eli Barbieri <eli@nethermind.io>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    {include = "starknet_abi"},
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pycryptodome = ">=3.4.6"  # https://www.pycryptodome.org/src/changelog#id98  Last Change Affecting Keccak
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.2"
+pre-commit = "^3.6.2"
+black = "^24.2.0"
+mypy = "^1.8.0"
+pylint = "^3.1.0"
+pyperf = "^2.6.3"
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = "^6.1.3"
+sphinx-book-theme = "^1.0.1"
+
+
+[build-system]
+requires = "poetry>=0.12"
+build-backend = "poetry.masonry.api"
+
+
+[tool.black]
+exclude = '''
+/(
+    \.eggs
+  | \.coverage
+  | \.env
+  | \.git
+  | \.github
+  | \.pytest_cache
+  | \.mypy_cache
+  | \.venv
+  | \.venv_*
+)/
+'''
+
+[tool.isort]
+profile = "black"
+atomic = true
+include_trailing_comma = true
+use_parentheses = true
+src_paths = ["starknet_abi", "tests"]
+filter_files = true
+known_first_party = "starknet_abi"
+
+
+[tool.pylint.main]
+max-line-length = 120
+jobs = 12
+ignore-paths = [ "^tests\\.*$", "^docs\\.*$", "^benchmarks\\.*$" ]
+py-version = "3.10"
+suggestion-mode = true
+disable=[
+    "C0114",  # TODO: Comment in what these are
+    "W1514",
+    "R0903",
+    "R1719",
+    "W1203",
+    "R0801"
+]
+
+
+[tool.pylint.design]
+max-args = 9  # Maximum number of arguments for function / method.
+max-attributes = 15  # Maximum number of attributes for a class (see R0902).
+max-bool-expr = 5  # Maximum number of boolean expressions in an if statement (see R0916).
+max-branches = 12  # Maximum number of branch for function / method body.
+max-locals = 15  # Maximum number of locals for function / method body.
+max-parents = 7  # Maximum number of parents for a class (see R0901).
+max-public-methods = 20  # Maximum number of public methods for a class (see R0904).
+max-returns = 6  # Maximum number of return / yield for function / method body.
+max-statements = 50  # Maximum number of statements in function / method body.
+min-public-methods = 2  # Minimum number of public methods for a class (see R0903).
+
+[tool.mypy]
+exclude = [
+    "^docs\\.py$",
+    "^tests\\.py$",
+]
