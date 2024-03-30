@@ -19,8 +19,8 @@ from starknet_abi.parse import (
 )
 from tests.utils import load_abi
 
-ETH_ABI_JSON = load_abi("starknet_eth.json", 2)
-ARGENT_ACCOUNT_ABI = load_abi("argent_account.json", 2)
+ETH_ABI_JSON = load_abi("starknet_eth", 2)
+ARGENT_ACCOUNT_ABI = load_abi("argent_account", 2)
 
 
 def test_struct_ordering():

@@ -274,6 +274,8 @@ def _parse_type(  # pylint: disable=too-many-return-statements
             # Fallback for rarely encountered types
             if abi_type == "felt":  # Only present in L1 Handler ABIs?
                 return StarknetCoreType.Felt
+            if abi_type.endswith("*"):  # Old Syntax for Arrays ?
+                return StarknetArray(_parse_type(abi_type[:-1], custom_types))
             if abi_type == "felt*":  # Only present in L1 Handler ABIs?
                 return StarknetArray(StarknetCoreType.Felt)
             if abi_type == "Uint256":  # Only present in L1 Handler ABIs?
@@ -322,17 +324,16 @@ def parse_abi_event(
     """
     if "kind" in abi_event:  # Version 2 Abi
         if abi_event["kind"] == "struct":
-            return AbiEvent(
-                name=abi_event["name"],
-                data=[
-                    AbiParameter(
-                        name=abi_input["name"],
-                        type=_parse_type(abi_input["type"], custom_types),
-                    )
-                    for abi_input in abi_event["members"]
-                ],
-            )
-        # TODO: Clean up Enum Event handling
+            event_parameters = abi_event["members"]
+        else:
+            return None
+
+    elif "inputs" in abi_event:  # Version 1 Abi
+        event_parameters = abi_event["inputs"]
+
+    elif "data" in abi_event:
+        event_parameters = abi_event["data"]
+    else:
         return None
 
     return AbiEvent(
@@ -342,7 +343,7 @@ def parse_abi_event(
                 name=abi_input["name"],
                 type=_parse_type(abi_input["type"], custom_types),
             )
-            for abi_input in abi_event["inputs"]
+            for abi_input in event_parameters
         ],
     )
 

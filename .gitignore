@@ -11,3 +11,6 @@ __pycache__
 
 # Docs
 _build/
+
+# Build
+dist/

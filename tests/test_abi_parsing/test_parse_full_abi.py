@@ -1,4 +1,9 @@
-from starknet_abi.abi_types import AbiParameter, StarknetCoreType
+from starknet_abi.abi_types import (
+    AbiParameter,
+    StarknetArray,
+    StarknetCoreType,
+    StarknetStruct,
+)
 from starknet_abi.core import StarknetAbi
 from starknet_abi.decoding_types import AbiEvent, AbiFunction
 from tests.utils import load_abi
@@ -44,11 +49,46 @@ def test_event_signatures():
 
 
 def test_load_eth_abi():
-    eth_abi = load_abi("starknet_eth.json", 2)
+    eth_abi = load_abi("starknet_eth", 2)
     eth_decoder = StarknetAbi.from_json(
         eth_abi,
         "starknet_eth",
         bytes.fromhex(
             "05ffbcfeb50d200a0677c48a129a11245a3fc519d1d98d76882d1c9a1b19c6ed"
         ),
+    )
+
+
+def test_load_wildcard_array_syntax():
+    wildcard_abi = load_abi("complex_array", 1)
+    decoder = StarknetAbi.from_json(
+        wildcard_abi,
+        "complex_array",
+        bytes.fromhex(
+            "0031da92cf5f54bcb81b447e219e2b791b23f3052d12b6c9abd04ff2e5626576"
+        ),
+    )
+
+    # "data": [
+    #     {
+    #         "name": "storage_cells_len",
+    #         "type": "felt"
+    #     },
+    #     {
+    #         "name": "storage_cells",
+    #         "type": "StorageCell*"
+    #     }
+    # ],
+
+    parsed_event = decoder.events["log_storage_cells"]
+
+    assert parsed_event.data[0].type == StarknetCoreType.Felt
+    assert parsed_event.data[1].type == StarknetArray(
+        StarknetStruct(
+            name="StorageCell",
+            members=[
+                AbiParameter("key", StarknetCoreType.Felt),
+                AbiParameter("value", StarknetCoreType.Felt),
+            ],
+        )
     )
