@@ -37,6 +37,8 @@ def group_abi_by_type(abi_json: list[dict]) -> defaultdict[AbiMemberType, list[d
 # Non-Struct Defined Types
 # Used for Topological Sorting abi struct and enum definitions of incorrectly ordered abis
 STARKNET_CORE_TYPES = {
+    "felt",  # Old Syntax for core::felt252
+    "felt*",  # Old Syntax for arrays
     "core::integer::u128",
     "core::integer::u64",
     "core::integer::u32",
@@ -119,8 +121,9 @@ def parse_enums_and_structs(
     for struct in abi_structs:
         type_name = struct["name"]
 
-        # This can be improved
         match type_name.split("::"):
+            case ["Uint256"]:  # Old Syntax
+                continue
             case ["core", "array" | "integer" | "bool" | "option", *_]:
                 # Automatically parses Array/Span, u256, bool, and Option types as StarknetCoreType
                 continue
@@ -276,8 +279,6 @@ def _parse_type(  # pylint: disable=too-many-return-statements
                 return StarknetCoreType.Felt
             if abi_type.endswith("*"):  # Old Syntax for Arrays ?
                 return StarknetArray(_parse_type(abi_type[:-1], custom_types))
-            if abi_type == "felt*":  # Only present in L1 Handler ABIs?
-                return StarknetArray(StarknetCoreType.Felt)
             if abi_type == "Uint256":  # Only present in L1 Handler ABIs?
                 return StarknetCoreType.U256
 

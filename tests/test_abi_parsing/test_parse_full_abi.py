@@ -1,3 +1,5 @@
+import json
+
 from starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
@@ -6,6 +8,12 @@ from starknet_abi.abi_types import (
 )
 from starknet_abi.core import StarknetAbi
 from starknet_abi.decoding_types import AbiEvent, AbiFunction
+from tests.abi import (
+    NO_STRUCT_ABI_DEFINITION,
+    NO_STRUCT_CLASS_HASH,
+    VERSION_0_ABI_DEFINITION,
+    VERSION_0_CLASS_HASH,
+)
 from tests.utils import load_abi
 
 
@@ -91,4 +99,24 @@ def test_load_wildcard_array_syntax():
                 AbiParameter("value", StarknetCoreType.Felt),
             ],
         )
+    )
+
+
+def test_no_struct_definition():
+    abi_json = json.loads(NO_STRUCT_ABI_DEFINITION)
+
+    decoder = StarknetAbi.from_json(
+        abi_json,
+        "no_struct",
+        bytes.fromhex(NO_STRUCT_CLASS_HASH[2:]),
+    )
+
+
+def test_felt_types():
+    abi_json = json.loads(VERSION_0_ABI_DEFINITION)
+
+    decoder = StarknetAbi.from_json(
+        abi_json,
+        "felt_types",
+        bytes.fromhex(VERSION_0_CLASS_HASH[2:]),
     )
