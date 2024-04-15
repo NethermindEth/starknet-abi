@@ -335,3 +335,13 @@ STARKNET_ACCOUNT_CALL = StarknetStruct(
         AbiParameter("calldata", StarknetArray(StarknetCoreType.Felt)),
     ],
 )
+
+STARKNET_V0_CALL = StarknetStruct(
+    name="CallArray",
+    members=[
+        AbiParameter("to", StarknetCoreType.Felt),
+        AbiParameter("selector", StarknetCoreType.Felt),
+        AbiParameter("data_offset", StarknetCoreType.U128),
+        AbiParameter("data_len", StarknetCoreType.U128),
+    ],
+)

@@ -4,6 +4,7 @@ from typing import Any, Sequence
 
 from starknet_abi.abi_types import (
     STARKNET_ACCOUNT_CALL,
+    STARKNET_V0_CALL,
     AbiParameter,
     StarknetArray,
     StarknetType,
@@ -85,17 +86,50 @@ class ClassDispatcher:
     class_hash: bytes
 
 
-def _parse_call(
+def _parse_tx_calldata(
     calldata: list[int],
-) -> tuple[
-    bytes, bytes, list[int]  # Contract Address  # Function Selector  # Calldata
-]:
-    contract_address = calldata.pop(0).to_bytes(length=32, byteorder="big")
-    function_selector = calldata.pop(0).to_bytes(length=32, byteorder="big")
-    _calldata_len = calldata.pop(0)
-    function_calldata = [calldata.pop(0) for _ in range(_calldata_len)]
+    tx_version: int,
+) -> list[tuple[bytes, bytes, list[int]]]:
+    """
+    Parses the calldata for a multicall operation, returning a list of tuples containing the contract address,
+    function selector, and function calldata for each call in the multicall operation.
 
-    return contract_address, function_selector, function_calldata
+    :param calldata: list of integers representing the calldata
+    :param tx_version: version of the call data
+    :return: [(contract_address, selector, calldata), ...]
+    """
+    match tx_version:
+        case 0:
+            decoded_calls = decode_from_types(
+                [StarknetArray(STARKNET_V0_CALL)], calldata
+            )
+            calldata.pop(0)  # Discard call count
+
+            return [
+                (
+                    bytes.fromhex(call["to"][2:]),
+                    bytes.fromhex(call["selector"][2:]),
+                    calldata[
+                        call["data_offset"] : call["data_offset"] + call["data_len"]
+                    ],
+                )
+                for call in decoded_calls[0]
+            ]
+
+        case 1 | 2 | 3:
+            decoded_calls = decode_from_types(
+                [StarknetArray(STARKNET_ACCOUNT_CALL)], calldata
+            )
+            return [
+                (
+                    bytes.fromhex(call["to"][2:]),
+                    bytes.fromhex(call["selector"][2:]),
+                    [int(c, 16) for c in call["calldata"]],
+                )
+                for call in decoded_calls[0]
+            ]
+        case _:
+            raise NotImplementedError(f"Unsupported Transaction Version: {tx_version}")
 
 
 @dataclass(slots=True)
@@ -336,7 +370,10 @@ class DecodingDispatcher:
         )
 
     def decode_multicall(
-        self, calldata: list[int], block: int
+        self,
+        calldata: list[int],
+        block: int,
+        tx_version: int = 3,
     ) -> list[DecodedOperation]:
         """
         Decodes a multicall operation from transaction calldata using the internal mapping of contract_addresses to
@@ -344,16 +381,18 @@ class DecodingDispatcher:
 
         :param calldata: list of integers representing the calldata
         :param block: block number to decode the transaction at
-        :return: list of DecodedOperations
+        :param tx_version: transaction version.  Earlier txns used a different calldata format
+        :return: [DecodedOperation, ...]
         """
 
         _calldata = calldata.copy()
-        operation_count = _calldata.pop(0)
-
-        parsed_calls = [_parse_call(_calldata) for _ in range(operation_count)]
 
         decoded_operations = []
-        for contract_address, function_selector, function_calldata in parsed_calls:
+        for (
+            contract_address,
+            function_selector,
+            function_calldata,
+        ) in _parse_tx_calldata(_calldata, tx_version):
             decoded_op = self._decode_tx_call(
                 contract_address=contract_address,
                 function_selector=function_selector,
