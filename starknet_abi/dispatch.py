@@ -90,8 +90,8 @@ def _parse_call(
 ) -> tuple[
     bytes, bytes, list[int]  # Contract Address  # Function Selector  # Calldata
 ]:
-    contract_address = calldata.pop(0).to_bytes(length=32)
-    function_selector = calldata.pop(0).to_bytes(length=32)
+    contract_address = calldata.pop(0).to_bytes(length=32, byteorder="big")
+    function_selector = calldata.pop(0).to_bytes(length=32, byteorder="big")
     _calldata_len = calldata.pop(0)
     function_calldata = [calldata.pop(0) for _ in range(_calldata_len)]
 
@@ -315,7 +315,7 @@ class DecodingDispatcher:
                 "Events require at least 1 key parameter as the selector"
             )
 
-        event_selector = keys.pop(0).to_bytes(length=32)
+        event_selector = keys.pop(0).to_bytes(length=32, byteorder="big")
 
         # These two should never fail if class_dispatcher is valid
         event_dispatcher = class_dispatcher.event_ids[event_selector[-8:]]
