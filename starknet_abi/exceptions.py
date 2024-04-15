@@ -57,3 +57,9 @@ class TypeEncodeError(Exception):
         starknet_abi.exceptions.TypeEncodeError: Integer 131072 is out of range for StarknetCoreType.U16
 
     """
+
+
+class DispatcherDecodeError(Exception):
+    """
+    Raised when there is an error decoding Functions, Events, or User Operations using the decoding dispatcher
+    """

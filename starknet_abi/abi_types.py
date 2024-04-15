@@ -323,3 +323,15 @@ class AbiParameter:
         :return:
         """
         return f"{self.name}:{self.type.id_str()}"
+
+
+# Constant Types
+
+STARKNET_ACCOUNT_CALL = StarknetStruct(
+    name="Call",
+    members=[
+        AbiParameter("to", StarknetCoreType.ContractAddress),
+        AbiParameter("selector", StarknetCoreType.Felt),
+        AbiParameter("calldata", StarknetArray(StarknetCoreType.Felt)),
+    ],
+)

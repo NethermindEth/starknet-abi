@@ -79,6 +79,11 @@ def decode_core_type(
                 ), f"{encoded_int} larger than Felt"
                 return f"0x{encoded_int:064x}"
 
+            case StarknetCoreType.EthAddress:
+                encoded_int = calldata.pop(0)
+                assert 0 <= encoded_int <= decode_type.max_value(), f"{encoded_int:0x} larger than EthAddress"
+                return f"0x{encoded_int:040x}"
+
             case StarknetCoreType.NoneType:
                 return ""
 

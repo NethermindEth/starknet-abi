@@ -3,6 +3,7 @@ from graphlib import TopologicalSorter
 from typing import Any
 
 from starknet_abi.abi_types import (
+    STARKNET_ACCOUNT_CALL,
     AbiMemberType,
     AbiParameter,
     StarknetArray,
@@ -126,6 +127,8 @@ def parse_enums_and_structs(
                 continue
             case ["core", "array" | "integer" | "bool" | "option", *_]:
                 # Automatically parses Array/Span, u256, bool, and Option types as StarknetCoreType
+                continue
+            case ["core", "starknet", "account", "Call"]:
                 continue
 
             # Can Hard code in structs like openzeppelin's ERC20 & Events for faster parsing
@@ -268,6 +271,10 @@ def _parse_type(  # pylint: disable=too-many-return-statements
             return StarknetOption(
                 _parse_type(extract_inner_type(abi_type), custom_types)
             )
+
+        # Matches 'core::starknet::account::Call'
+        case ["starknet", "account", "Call"]:
+            return STARKNET_ACCOUNT_CALL
 
         case _:
             # If unknown type is defined in struct context, return struct

@@ -16,7 +16,9 @@ def bench_setup():
     ]
 
     def _run_bench():
-        parsed_abi = StarknetAbi.from_json(starknet_eth_abi, "starknet_eth")
+        parsed_abi = StarknetAbi.from_json(
+            starknet_eth_abi, "starknet_eth", class_hash=b""
+        )
 
         transfer_func = parsed_abi.functions["transfer"].inputs
         calldata_copy = transfer_calldata.copy()
