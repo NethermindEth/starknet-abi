@@ -1,51 +1,11 @@
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Sequence
 
-from starknet_abi.abi_types import (
-    STARKNET_ACCOUNT_CALL,
-    AbiParameter,
-    StarknetArray,
-    StarknetType,
-)
+from starknet_abi.abi_types import AbiParameter, StarknetType
 from starknet_abi.core import StarknetAbi
 from starknet_abi.decode import decode_from_params, decode_from_types
 from starknet_abi.decoding_types import DecodedEvent, DecodedFunction
 from starknet_abi.exceptions import InvalidCalldataError
-
-# fmt: off
-
-# starknet_keccak(b'__execute__')[-8:]
-EXECUTE_SIGNATURE = bytes.fromhex("5e85627ee876e5ad")
-
-# starknet_keccak(b'__validate__')[-8:]
-VALIDATE_SIGNATURE = bytes.fromhex("0ff0b2189d9c7775")
-
-# starknet_keccak(b'__validate_deploy__')[-8:]
-VALIDATE_DEPLOY_SIGNATURE = bytes.fromhex("3972f0af8aa92895")
-
-# starknet_keccak(b'__validate_declare__')[-8:]
-VALIDATE_DECLARE_SIGNATURE = bytes.fromhex("fa4008dcdb4963b3")
-
-CORE_FUNCTIONS: dict[bytes, dict[str, Any]] = {
-    EXECUTE_SIGNATURE: {
-        "name": "__execute__",
-        "inputs": [AbiParameter("calls", StarknetArray(STARKNET_ACCOUNT_CALL))],
-    },
-    VALIDATE_SIGNATURE: {
-        "name": "__validate__",
-        "inputs": [AbiParameter("calls", StarknetArray(STARKNET_ACCOUNT_CALL))],
-    },
-    VALIDATE_DEPLOY_SIGNATURE: {
-        "name": "__validate_deploy__",
-        "inputs": [],
-    },
-    VALIDATE_DECLARE_SIGNATURE: {
-        "name": "__validate_declare__",
-        "inputs": [],
-    },
-}
-
-# fmt: on
 
 
 @dataclass(slots=True)
@@ -208,28 +168,20 @@ class DecodingDispatcher:
         :param class_hash:  class hash of the trace or transaction
         :return:
         """
-        decode_id = function_selector[-8:]
 
-        if decode_id in CORE_FUNCTIONS:
-            input_types: Sequence[AbiParameter] = CORE_FUNCTIONS[decode_id]["inputs"]
-            function_name = CORE_FUNCTIONS[decode_id]["name"]
-            output_types: Sequence[StarknetType] = []
-            abi_name = None
+        class_dispatcher = self.class_ids.get(class_hash[-8:])
+        if class_dispatcher is None:
+            return None
 
-        else:
-            class_dispatcher = self.class_ids.get(class_hash[-8:])
-            if class_dispatcher is None:
-                return None
-
-            # Both function_dispatcher and function_type should throw if keys not found
-            function_dispatcher = class_dispatcher.function_ids[function_selector[-8:]]
-            input_types, output_types = self.function_types[
-                function_dispatcher.decoder_reference
-            ]
-            function_name, abi_name = (
-                function_dispatcher.function_name,
-                class_dispatcher.abi_name,
-            )
+        # Both function_dispatcher and function_type should throw if keys not found
+        function_dispatcher = class_dispatcher.function_ids[function_selector[-8:]]
+        input_types, output_types = self.function_types[
+            function_dispatcher.decoder_reference
+        ]
+        function_name, abi_name = (
+            function_dispatcher.function_name,
+            class_dispatcher.abi_name,
+        )
 
         # Copy Arrays that can be consumed by decoder
         _calldata, _result = calldata.copy(), result.copy()
