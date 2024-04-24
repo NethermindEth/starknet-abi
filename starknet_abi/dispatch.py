@@ -8,15 +8,18 @@ from starknet_abi.decode import decode_from_params, decode_from_types
 from starknet_abi.decoding_types import DecodedEvent, DecodedFunction
 from starknet_abi.exceptions import InvalidCalldataError
 
-consistent_hash = hashlib.md5()
-# Python's builtin hash() function is seeded with a random value at startup, so it is not consistent across runs
-# Using a consistent hash allows a DecodingDispatcher to be pickled and cached between uses
-
 
 def _id_hash(id_str: str) -> bytes:
-    consistent_hash.update(id_str.encode())
+    """
+    Python's builtin hash() function is seeded with a random value at interpreter startup, so it is not
+    consistent across runs.  Using a consistent hash allows a DecodingDispatcher to be pickled and
+    cached between uses
+    """
+
+    h = hashlib.md5()
+    h.update(id_str.encode())
     # MD5 returns a 16byte digest.  We only need the last 8
-    return consistent_hash.digest()[-8:]
+    return h.digest()[-8:]
 
 
 @dataclass(slots=True)

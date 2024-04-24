@@ -1,8 +1,16 @@
+import json
+
 import pytest
 
+from starknet_abi.abi_types import (
+    AbiParameter,
+    StarknetCoreType,
+    StarknetStruct,
+    StarknetTuple,
+)
 from starknet_abi.core import StarknetAbi
-
-from .utils import get_abis_for_version
+from tests.test_abi_parsing.utils import get_abis_for_version
+from tests.utils import PARENT_DIR
 
 v1_abi_names_and_json = get_abis_for_version("v1")
 v2_abi_names_and_json = get_abis_for_version("v2")
@@ -19,3 +27,27 @@ def test_parse_v2_abis_to_starknet_abi(abi_name, abi_json):
 
     if abi_name == "starknet_eth":
         assert "transfer" in decoder.functions
+
+
+def test_named_tuple_parsing():
+    abi_json = json.load(open(PARENT_DIR / "abis" / "v1" / "legacy_named_tuple.json"))
+
+    parsed_abi = StarknetAbi.from_json(
+        abi_json,
+        "legacy_named_tuple",
+        bytes.fromhex(
+            "0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"
+        ),
+    )
+
+    xor_inputs = parsed_abi.functions["xor_counters"].inputs
+    input_name, input_type = xor_inputs[0].name, xor_inputs[0].type
+    assert isinstance(input_type, StarknetStruct)
+    assert input_name == "index_and_x"
+    assert input_type.name == "IndexAndValues"
+    assert input_type.members == [
+        AbiParameter("index", StarknetCoreType.Felt),
+        AbiParameter(
+            "values", StarknetTuple([StarknetCoreType.Felt, StarknetCoreType.Felt])
+        ),
+    ]

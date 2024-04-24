@@ -4,6 +4,7 @@ from starknet_abi.abi_types import (
     StarknetEnum,
     StarknetOption,
     StarknetStruct,
+    StarknetTuple,
 )
 from starknet_abi.parse import _parse_type
 
@@ -64,3 +65,9 @@ def test_parse_option():
     assert _parse_type(
         "core::option::Option::<core::bool>", EMPTY_STRUCT
     ) == StarknetOption(StarknetCoreType.Bool)
+
+
+def test_legacy_types():
+    assert _parse_type("(x: felt, y: felt)", EMPTY_STRUCT) == StarknetTuple(
+        [StarknetCoreType.Felt, StarknetCoreType.Felt]
+    )

@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from graphlib import TopologicalSorter
 from typing import Any
@@ -178,7 +179,15 @@ def _parse_tuple(
     :return:
     """
 
-    stripped_tuple = abi_type[1:-1].replace(" ", "")  # Remove Outer Parentheses
+    def _is_named_tuple(type_str):
+        match = re.search(r"(?<!:):(?!:)", type_str)
+        if match:
+            return match.start()
+        # If no match is found, return -1
+        return False
+
+    # Remove Outer Parentheses & Whitespace
+    stripped_tuple = abi_type[1:-1].replace(" ", "")
 
     output_types = []
     parenthesis_cache = []  # Tracks tuple opens and closes
@@ -196,7 +205,14 @@ def _parse_tuple(
         if parenthesis_cache:  # Currently Parsing Types inside Nested Tuple
             type_cache.append(type_string)
         else:  # Append Types To Root Tuple
-            output_types.append(_parse_type(type_string, custom_types))
+            if _is_named_tuple(type_string):
+                output_types.append(
+                    _parse_type(
+                        type_string[_is_named_tuple(type_string) + 1 :], custom_types
+                    )
+                )
+            else:
+                output_types.append(_parse_type(type_string, custom_types))
 
         if tuple_close:
             for _ in range(tuple_close):
