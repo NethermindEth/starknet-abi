@@ -1,3 +1,4 @@
+import hashlib
 from dataclasses import dataclass
 from typing import Sequence
 
@@ -7,15 +8,25 @@ from starknet_abi.decode import decode_from_params, decode_from_types
 from starknet_abi.decoding_types import DecodedEvent, DecodedFunction
 from starknet_abi.exceptions import InvalidCalldataError
 
+consistent_hash = hashlib.md5()
+# Python's builtin hash() function is seeded with a random value at startup, so it is not consistent across runs
+# Using a consistent hash allows a DecodingDispatcher to be pickled and cached between uses
+
+
+def _id_hash(id_str: str) -> bytes:
+    consistent_hash.update(id_str.encode())
+    # MD5 returns a 16byte digest.  We only need the last 8
+    return consistent_hash.digest()[-8:]
+
 
 @dataclass(slots=True)
 class FunctionDispatchInfo:
     """
     Dispatcher storing a function name, and a reference to the type of the event.  The reference is the result of
-    hash(AbiFunction.id_str())
+    _id_hash(AbiFunction.id_str())
     """
 
-    decoder_reference: int  # Result of hash(type.id_str())
+    decoder_reference: bytes  # Result of _id_hash(type.id_str())
     function_name: str
 
 
@@ -26,7 +37,7 @@ class EventDispatchInfo:
     event type id_str(), and is stored in a separate mapping to reduce object size
     """
 
-    decoder_reference: int  # Result of hash(type.id_str())
+    decoder_reference: bytes  # Result of _id_hash(type.id_str())
     event_name: str
 
 
@@ -59,7 +70,7 @@ class DecodingDispatcher:
     class_ids: dict[bytes, ClassDispatcher]
 
     function_types: dict[
-        int,  # Result of hash(type.id_str())  --> 8 bytes on 64bit machines
+        bytes,  # Result of _id_hash(type.id_str())
         tuple[
             Sequence[AbiParameter],  # Parameters for Function Inputs
             Sequence[StarknetType],  # Types of Function Outputs
@@ -67,7 +78,7 @@ class DecodingDispatcher:
     ]
 
     event_types: dict[
-        int,  # Result of hash(type.id_str())  --> 8 bytes on 64bit machines
+        bytes,  # Result of _id_hash(type.id_str())
         tuple[
             Sequence[AbiParameter],  # Parameters for Event Data
             Sequence[AbiParameter],  # Parameters for Event Keys
@@ -91,7 +102,7 @@ class DecodingDispatcher:
 
         function_ids = {}
         for function in abi.functions.values():
-            function_type_id = hash(function.id_str())
+            function_type_id = _id_hash(function.id_str())
             if function_type_id not in self.function_types:
                 self.function_types.update(
                     {function_type_id: (function.inputs, function.outputs)}
@@ -117,7 +128,7 @@ class DecodingDispatcher:
         """
         event_ids = {}
         for event in abi.events.values():
-            event_type_id = hash(event.id_str())
+            event_type_id = _id_hash(event.id_str())
             if event_type_id not in self.event_types:
                 self.event_types.update({event_type_id: (event.data, event.keys)})
 
