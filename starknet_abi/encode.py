@@ -32,7 +32,7 @@ def _get_enum_index(enum_type: StarknetEnum, enum_key: str) -> tuple[int, Starkn
     raise ValueError(f"Enum Key {enum_key} not found in Enum {enum_type}")
 
 
-def encode_core_type(  # pylint: disable=too-many-return-statements
+def encode_core_type(  # pylint: disable=too-many-return-statements,too-many-branches
     encode_type: StarknetCoreType,
     value: bytes | int | bool | str,
 ) -> list[int]:
@@ -76,12 +76,16 @@ def encode_core_type(  # pylint: disable=too-many-return-statements
                 | StarknetCoreType.ClassHash
                 | StarknetCoreType.ContractAddress
                 | StarknetCoreType.EthAddress
+                | StarknetCoreType.StorageAddress
+                | StarknetCoreType.Bytes31
             ):
                 if isinstance(value, str):
                     assert value.startswith("0x"), "Hex Strings must be 0x Prefixed"
                     int_encoded = int(value, 16)
                     if encode_type == StarknetCoreType.EthAddress:
                         assert int_encoded <= encode_type.max_value(), f"{value!r} Is larger than an Eth Address"
+                    elif encode_type == StarknetCoreType.Bytes31:
+                        assert 0 <= int_encoded <= encode_type.max_value(), f"{value!r} Does not Fit into 31 Bytes"
                     else:
                         assert int_encoded <= encode_type.max_value(), f"{value!r} Does not Fit into Starknet Felt"
 
@@ -90,6 +94,8 @@ def encode_core_type(  # pylint: disable=too-many-return-statements
                 if isinstance(value, int):
                     if encode_type == StarknetCoreType.EthAddress:
                         assert value <= encode_type.max_value(), f"{value!r} Is larger than an Eth Address"
+                    elif encode_type == StarknetCoreType.Bytes31:
+                        assert 0 <= value <= encode_type.max_value(), f"{value!r} Does not Fit into 31 Bytes"
                     else:
                         assert 0 <= value <= encode_type.max_value(), f"{value!r} Does not Fit into Starknet Felt"
 
@@ -99,6 +105,8 @@ def encode_core_type(  # pylint: disable=too-many-return-statements
                     int_encoded = int.from_bytes(value, "big")
                     if encode_type == StarknetCoreType.EthAddress:
                         assert int_encoded <= encode_type.max_value(), f"{value!r} Is larger than an Eth Address"
+                    elif encode_type == StarknetCoreType.Bytes31:
+                        assert 0 <= int_encoded <= encode_type.max_value(), f"{value!r} Does not Fit into 31 Bytes"
                     else:
                         assert value <= encode_type.max_value(), f"{value!r} Does not Fit into Starknet Felt"
 

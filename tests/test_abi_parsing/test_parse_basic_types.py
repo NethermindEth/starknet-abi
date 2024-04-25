@@ -71,3 +71,16 @@ def test_legacy_types():
     assert _parse_type("(x: felt, y: felt)", EMPTY_STRUCT) == StarknetTuple(
         [StarknetCoreType.Felt, StarknetCoreType.Felt]
     )
+
+
+def test_parse_storage_address():
+    assert (
+        _parse_type("core::starknet::storage_access::StorageAddress", EMPTY_STRUCT)
+        == StarknetCoreType.StorageAddress
+    )
+
+
+def test_parse_bytes():
+    assert (
+        _parse_type("core::bytes_31::bytes31", EMPTY_STRUCT) == StarknetCoreType.Bytes31
+    )

@@ -4,7 +4,6 @@ from graphlib import TopologicalSorter
 from typing import Any
 
 from starknet_abi.abi_types import (
-    STARKNET_ACCOUNT_CALL,
     AbiMemberType,
     AbiParameter,
     StarknetArray,
@@ -128,8 +127,6 @@ def parse_enums_and_structs(
                 continue
             case ["core", "array" | "integer" | "bool" | "option", *_]:
                 # Automatically parses Array/Span, u256, bool, and Option types as StarknetCoreType
-                continue
-            case ["core", "starknet", "account", "Call"]:
                 continue
 
             # Can Hard code in structs like openzeppelin's ERC20 & Events for faster parsing
@@ -272,6 +269,12 @@ def _parse_type(  # pylint: disable=too-many-return-statements
         case ["starknet", "eth_address", "EthAddress"]:
             return StarknetCoreType.EthAddress
 
+        case ["bytes_31", "bytes31"]:
+            return StarknetCoreType.Bytes31
+
+        case ["starknet", "storage_access", "StorageAddress"]:
+            return StarknetCoreType.StorageAddress
+
         ############################################################
         #  Complex Types: Structs, Arrays, etc.
         ############################################################
@@ -288,10 +291,6 @@ def _parse_type(  # pylint: disable=too-many-return-statements
                 _parse_type(extract_inner_type(abi_type), custom_types)
             )
 
-        # Matches 'core::starknet::account::Call'
-        case ["starknet", "account", "Call"]:
-            return STARKNET_ACCOUNT_CALL
-
         case _:
             # If unknown type is defined in struct context, return struct
             if abi_type in custom_types:
@@ -300,12 +299,61 @@ def _parse_type(  # pylint: disable=too-many-return-statements
             # Fallback for rarely encountered types
             if abi_type == "felt":  # Only present in L1 Handler ABIs?
                 return StarknetCoreType.Felt
-            if abi_type.endswith("*"):  # Old Syntax for Arrays ?
+            if abi_type.endswith("*"):  # Old Syntax for Arrays
                 return StarknetArray(_parse_type(abi_type[:-1], custom_types))
             if abi_type == "Uint256":  # Only present in L1 Handler ABIs?
                 return StarknetCoreType.U256
 
             raise InvalidAbiError(f"Invalid ABI Type: {abi_type}")
+
+
+def parse_abi_parameters(
+    names: list[str],
+    types: list[str],
+    custom_types: dict[str, StarknetStruct | StarknetEnum],
+):
+    """
+    Parses ABIs with wildcard syntax.  If felt* is detected, it is parsed as an array of Felt, and the felt_len
+    parameter is omitted from the parsed type
+    """
+    output_parameters: list[AbiParameter] = []
+
+    for name, json_type_str in zip(names, types, strict=True):
+        if json_type_str.endswith("*"):
+            len_param = output_parameters.pop(-1)
+            assert len_param.name.endswith(
+                "_len"
+            ), f"Type {json_type_str} not preceeded by a length parameter"
+
+        output_parameters.append(
+            AbiParameter(
+                name=name,
+                type=_parse_type(json_type_str, custom_types),
+            )
+        )
+
+    return output_parameters
+
+
+def parse_abi_types(
+    types: list[str],
+    custom_types: dict[str, StarknetStruct | StarknetEnum],
+):
+    """
+    Parses a list of ABI types into StarknetTypes while maintaining wildcard syntax definitions.
+    """
+    output_types: list[StarknetType] = []
+
+    for json_type_str in types:
+        if json_type_str.endswith("*"):
+            len_type = output_types.pop(-1)
+            assert (
+                len_type == StarknetCoreType.Felt
+            ), f"Type {json_type_str} not preceeded by a Felt Length Param"
+
+        output_types.append(_parse_type(json_type_str, custom_types))
+
+    return output_types
 
 
 def parse_abi_function(
@@ -319,19 +367,21 @@ def parse_abi_function(
     :param custom_types:
     :return:
     """
+
+    parsed_inputs = parse_abi_parameters(
+        names=[abi_input["name"] for abi_input in abi_function["inputs"]],
+        types=[abi_input["type"] for abi_input in abi_function["inputs"]],
+        custom_types=custom_types,
+    )
+    parsed_outputs = parse_abi_types(
+        types=[abi_output["type"] for abi_output in abi_function["outputs"]],
+        custom_types=custom_types,
+    )
+
     return AbiFunction(
         name=abi_function["name"],
-        inputs=[
-            AbiParameter(
-                name=abi_input["name"],
-                type=_parse_type(abi_input["type"], custom_types),
-            )
-            for abi_input in abi_function["inputs"]
-        ],
-        outputs=[
-            _parse_type(abi_output["type"], custom_types)
-            for abi_output in abi_function["outputs"]
-        ],
+        inputs=parsed_inputs,
+        outputs=parsed_outputs,
     )
 
 
@@ -360,15 +410,15 @@ def parse_abi_event(
     else:
         return None
 
+    parsed_data = parse_abi_parameters(
+        names=[abi_input["name"] for abi_input in event_parameters],
+        types=[abi_input["type"] for abi_input in event_parameters],
+        custom_types=custom_types,
+    )
+
     return AbiEvent(
         name=abi_event["name"],
-        data=[
-            AbiParameter(
-                name=abi_input["name"],
-                type=_parse_type(abi_input["type"], custom_types),
-            )
-            for abi_input in event_parameters
-        ],
+        data=parsed_data,
     )
 
 

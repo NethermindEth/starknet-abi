@@ -93,7 +93,7 @@ def test_enum_parsing():
 
     type_dict = parse_enums_and_structs(grouped_abi["type_def"])
 
-    assert len(type_dict) == 4
+    assert len(type_dict) == 5
 
     assert type_dict["account::escape::EscapeStatus"] == StarknetEnum(
         name="account::escape::EscapeStatus",

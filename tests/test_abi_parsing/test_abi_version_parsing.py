@@ -51,3 +51,22 @@ def test_named_tuple_parsing():
             "values", StarknetTuple([StarknetCoreType.Felt, StarknetCoreType.Felt])
         ),
     ]
+
+
+def test_storage_address_parsing():
+    abi_json = json.load(open(PARENT_DIR / "abis" / "v2" / "storage_address.json"))
+
+    parsed_abi = StarknetAbi.from_json(
+        abi_json,
+        "storage_address",
+        bytes.fromhex(
+            "0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"
+        ),
+    )
+
+    storage_function = parsed_abi.functions["storage_read"]
+
+    assert storage_function.inputs == [
+        AbiParameter("address_domain", StarknetCoreType.U32),
+        AbiParameter("address", StarknetCoreType.StorageAddress),
+    ]

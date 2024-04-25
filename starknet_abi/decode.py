@@ -16,7 +16,7 @@ from starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
 # fmt: off
 
 
-def decode_core_type(
+def decode_core_type(  # pylint: disable=too-many-return-statements
     decode_type: StarknetCoreType, calldata: list[int]
 ) -> str | int | bool:
     """
@@ -71,6 +71,7 @@ def decode_core_type(
                 StarknetCoreType.Felt
                 | StarknetCoreType.ClassHash
                 | StarknetCoreType.ContractAddress
+                | StarknetCoreType.StorageAddress
             ):
                 encoded_int = calldata.pop(0)
 
@@ -83,6 +84,11 @@ def decode_core_type(
                 encoded_int = calldata.pop(0)
                 assert 0 <= encoded_int <= decode_type.max_value(), f"{encoded_int:0x} larger than EthAddress"
                 return f"0x{encoded_int:040x}"
+
+            case StarknetCoreType.Bytes31:
+                encoded_int = calldata.pop(0)
+                assert 0 <= encoded_int <= decode_type.max_value(), f"{encoded_int:0x} larger than Bytes31"
+                return f"0x{encoded_int:062x}"
 
             case StarknetCoreType.NoneType:
                 return ""

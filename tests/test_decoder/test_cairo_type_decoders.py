@@ -261,3 +261,24 @@ def test_tuple_valid_values(starknet_type, calldata, decoded):
     assert encoded_calldata == calldata
 
     assert len(_calldata) == 0
+
+
+@pytest.mark.parametrize(
+    ("calldata", "decoded"),
+    [
+        (
+            [0x3DC782D803B8A574D29E3383A4885EBDDDA9D8D7E15CD5A5F1FB1651EE052E],
+            "0x3dc782d803b8a574d29e3383a4885ebddda9d8d7e15cd5a5f1fb1651ee052e",
+        ),
+    ],
+)
+def test_bytes_31(calldata, decoded):
+    _calldata = calldata.copy()
+
+    decoded_values = decode_from_types([StarknetCoreType.Bytes31], _calldata)
+    encoded_calldata = encode_from_types([StarknetCoreType.Bytes31], [decoded])
+
+    assert len(decoded_values[0]) == 64  # instead of 66...
+    assert decoded_values[0] == decoded
+    assert encoded_calldata == calldata
+    assert len(_calldata) == 0

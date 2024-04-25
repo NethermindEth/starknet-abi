@@ -90,8 +90,8 @@ def test_load_wildcard_array_syntax():
 
     parsed_event = decoder.events["log_storage_cells"]
 
-    assert parsed_event.data[0].type == StarknetCoreType.Felt
-    assert parsed_event.data[1].type == StarknetArray(
+    assert len(parsed_event.data) == 1
+    assert parsed_event.data[0].type == StarknetArray(
         StarknetStruct(
             name="StorageCell",
             members=[

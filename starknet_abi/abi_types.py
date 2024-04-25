@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Literal, Sequence, Union
 
 # Disable Invalid Name check to allow lower-cased enum names
-
 # pylint: disable=invalid-name
 
 AbiMemberType = Literal[
@@ -48,7 +47,9 @@ class StarknetCoreType(Enum):
     ContractAddress = 6
     EthAddress = 7
     ClassHash = 9
-    NoneType = 10  # No decoder, used in enums literals
+    StorageAddress = 10
+    Bytes31 = 11
+    NoneType = 12  # No decoder, used in enums literals
 
     def __repr__(self):
         # Override __repr__ to return the Enum Name without value
@@ -100,6 +101,8 @@ class StarknetCoreType(Enum):
             'ContractAddress'
             >>> StarknetCoreType.NoneType.id_str()
             'NoneType'
+            >>> StarknetCoreType.StorageAddress.id_str()
+            'StorageAddress'
 
         :return:
         """
@@ -125,6 +128,9 @@ class StarknetCoreType(Enum):
 
         if self.name == "EthAddress":
             return 2**160 - 1
+
+        if self.name == "Bytes31":
+            return 2**248 - 1
 
         raise ValueError(f"Cannot get max value for type: {self.name}")
 
@@ -323,25 +329,3 @@ class AbiParameter:
         :return:
         """
         return f"{self.name}:{self.type.id_str()}"
-
-
-# Constant Types
-
-STARKNET_ACCOUNT_CALL = StarknetStruct(
-    name="Call",
-    members=[
-        AbiParameter("to", StarknetCoreType.ContractAddress),
-        AbiParameter("selector", StarknetCoreType.Felt),
-        AbiParameter("calldata", StarknetArray(StarknetCoreType.Felt)),
-    ],
-)
-
-STARKNET_V0_CALL = StarknetStruct(
-    name="CallArray",
-    members=[
-        AbiParameter("to", StarknetCoreType.Felt),
-        AbiParameter("selector", StarknetCoreType.Felt),
-        AbiParameter("data_offset", StarknetCoreType.U128),
-        AbiParameter("data_len", StarknetCoreType.U128),
-    ],
-)
