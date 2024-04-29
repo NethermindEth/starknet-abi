@@ -8,6 +8,7 @@ from starknet_abi.abi_types import (
 )
 from starknet_abi.core import StarknetAbi
 from starknet_abi.decoding_types import AbiEvent, AbiFunction
+from starknet_abi.parse import parse_abi_function
 from tests.abi import (
     NO_STRUCT_ABI_DEFINITION,
     NO_STRUCT_CLASS_HASH,
@@ -100,6 +101,30 @@ def test_load_wildcard_array_syntax():
             ],
         )
     )
+
+
+def test_wildcard_size_syntax():
+    # felt* syntax length parameter can be calldata_len or calldata_size
+    abi_function = {
+        "inputs": [
+            {"name": "selector", "type": "felt"},
+            {"name": "calldata_size", "type": "felt"},
+            {"name": "calldata", "type": "felt*"},
+        ],
+        "name": "__default__",
+        "outputs": [
+            {"name": "retdata_size", "type": "felt"},
+            {"name": "retdata", "type": "felt*"},
+        ],
+        "type": "function",
+    }
+
+    parsed_abi_func = parse_abi_function(abi_function, {})
+    assert len(parsed_abi_func.inputs) == 2
+    assert parsed_abi_func.inputs[0].name == "selector"
+    assert parsed_abi_func.inputs[0].type == StarknetCoreType.Felt
+    assert parsed_abi_func.inputs[1].name == "calldata"
+    assert parsed_abi_func.inputs[1].type == StarknetArray(StarknetCoreType.Felt)
 
 
 def test_no_struct_definition():
