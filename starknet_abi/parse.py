@@ -322,8 +322,8 @@ def parse_abi_parameters(
         if json_type_str.endswith("*"):
             len_param = output_parameters.pop(-1)
             assert len_param.name.endswith(
-                "_len"
-            ), f"Type {json_type_str} not preceeded by a length parameter"
+                ("_len", "_size")
+            ), f"Type {json_type_str} not preceded by a length parameter"
 
         output_parameters.append(
             AbiParameter(
@@ -349,7 +349,7 @@ def parse_abi_types(
             len_type = output_types.pop(-1)
             assert (
                 len_type == StarknetCoreType.Felt
-            ), f"Type {json_type_str} not preceeded by a Felt Length Param"
+            ), f"Type {json_type_str} not preceded by a Felt Length Param"
 
         output_types.append(_parse_type(json_type_str, custom_types))
 
