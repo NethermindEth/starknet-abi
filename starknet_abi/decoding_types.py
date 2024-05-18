@@ -34,19 +34,6 @@ class DecodedEvent:
 
 
 @dataclass(slots=True)
-class DecodedOperation:
-    """
-
-    Dataclass representing a decoded user operation.  If operation is unknown, the name will be set to
-    'Unknown' and params set to the raw calldata inputs.
-
-    """
-
-    operation_name: str
-    operation_params: dict[str, Any]
-
-
-@dataclass(slots=True)
 class AbiFunction:
     """
     Dataclass Representing an ABI Function.  Includes a function name, the function signature, and the input

@@ -48,8 +48,7 @@ class EventDispatchInfo:
 class ClassDispatcher:
     """
     Dispatcher Entry for a Class.  Contains a mapping from function_ids -> FunctionDispatchInfo and a mapping from
-    event_ids -> EventDispatchInfo.  Also contains full class hash, abi name, and will later include additional
-    metadata fields/classifications ie. Proxy or ArgentAccount
+    event_ids -> EventDispatchInfo
     """
 
     function_ids: dict[bytes, FunctionDispatchInfo]
@@ -92,6 +91,13 @@ class DecodingDispatcher:
         self.class_ids = {}
         self.event_types = {}
         self.function_types = {}
+
+    def get_class(self, class_hash: bytes) -> ClassDispatcher | None:
+        """
+        Returns a ClassDispatcher for a given class_hash, or None if the class_hash is not present in the dispatcher.
+        will work with both a full class hash, or an 8-byte class-id
+        """
+        return self.class_ids.get(class_hash[-8:])
 
     def _add_abi_functions(self, abi: StarknetAbi) -> dict[bytes, FunctionDispatchInfo]:
         """
