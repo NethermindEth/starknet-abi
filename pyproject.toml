@@ -6,7 +6,7 @@ authors = ["Eli Barbieri <eli@nethermind.io>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    {include = "starknet_abi", from = "nethermind"},
+    {include = "nethermind"},
 ]
 
 [tool.poetry.dependencies]
