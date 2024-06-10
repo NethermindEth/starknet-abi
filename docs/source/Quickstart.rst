@@ -16,7 +16,7 @@ Setup
 .. code-block:: python
 
     import json
-    from starknet_abi import StarknetABI
+    from nethermind.starknet_abi import StarknetABI
 
     with open('abi.json') as f:
         raw_abi = json.load(f)

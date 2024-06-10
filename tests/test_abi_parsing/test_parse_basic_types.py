@@ -1,4 +1,4 @@
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
@@ -6,7 +6,7 @@ from starknet_abi.abi_types import (
     StarknetStruct,
     StarknetTuple,
 )
-from starknet_abi.parse import _parse_type
+from nethermind.starknet_abi.parse import _parse_type
 
 EMPTY_STRUCT: dict[str, StarknetStruct | StarknetEnum] = {}
 

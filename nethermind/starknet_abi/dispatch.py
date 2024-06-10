@@ -2,11 +2,11 @@ import hashlib
 from dataclasses import dataclass
 from typing import Sequence
 
-from starknet_abi.abi_types import AbiParameter, StarknetType
-from starknet_abi.core import StarknetAbi
-from starknet_abi.decode import decode_from_params, decode_from_types
-from starknet_abi.decoding_types import DecodedEvent, DecodedFunction
-from starknet_abi.exceptions import InvalidCalldataError
+from nethermind.starknet_abi.abi_types import AbiParameter, StarknetType
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.decode import decode_from_params, decode_from_types
+from nethermind.starknet_abi.decoding_types import DecodedEvent, DecodedFunction
+from nethermind.starknet_abi.exceptions import InvalidCalldataError
 
 
 def _id_hash(id_str: str) -> bytes:

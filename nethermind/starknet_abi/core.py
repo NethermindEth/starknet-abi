@@ -2,10 +2,10 @@ import warnings
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from starknet_abi.abi_types import AbiParameter
-from starknet_abi.decoding_types import AbiEvent, AbiFunction, AbiInterface
-from starknet_abi.exceptions import InvalidAbiError
-from starknet_abi.parse import (
+from nethermind.starknet_abi.abi_types import AbiParameter
+from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction, AbiInterface
+from nethermind.starknet_abi.exceptions import InvalidAbiError
+from nethermind.starknet_abi.parse import (
     _parse_type,
     group_abi_by_type,
     parse_abi_event,

@@ -1,6 +1,6 @@
 from typing import Any, Sequence
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
@@ -10,7 +10,7 @@ from starknet_abi.abi_types import (
     StarknetTuple,
     StarknetType,
 )
-from starknet_abi.exceptions import TypeEncodeError
+from nethermind.starknet_abi.exceptions import TypeEncodeError
 
 # Disables Assert statements from being formatted into multi-line messes
 # fmt: off

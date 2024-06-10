@@ -1,6 +1,6 @@
 from typing import Any, Sequence
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
@@ -10,7 +10,7 @@ from starknet_abi.abi_types import (
     StarknetTuple,
     StarknetType,
 )
-from starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
+from nethermind.starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
 
 # Disable linter line breaks to make assert statements more readable
 # fmt: off
@@ -25,7 +25,7 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
     calldata array is recursively passed between type decoders, so this array is modified during decoding
 
     .. doctest::
-        >>> from starknet_abi.decode import decode_core_type, StarknetCoreType
+        >>> from nethermind.starknet_abi.decode import decode_core_type, StarknetCoreType
         >>> decode_core_type(StarknetCoreType.Bool, [0])
         False
         >>> decode_core_type(StarknetCoreType.U256, [12345, 0])
@@ -120,7 +120,7 @@ def decode_from_types(
         popped off the stack as decoding occurs
 
     .. doctest::
-        >>> from starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
+        >>> from nethermind.starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
         >>> decode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [3, 123, 244, 210, 0])
         [[123, 244, 210], False]
         >>> decode_from_types(
@@ -219,7 +219,7 @@ def decode_from_params(
 
     .. doctest::
 
-        >>> from starknet_abi.decode import AbiParameter, decode_from_params, StarknetCoreType
+        >>> from nethermind.starknet_abi.decode import AbiParameter, decode_from_params, StarknetCoreType
         >>> decode_from_params(
         ...     [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
         ...     [123456, 654321]

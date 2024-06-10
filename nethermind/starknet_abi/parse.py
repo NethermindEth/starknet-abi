@@ -3,7 +3,7 @@ from collections import defaultdict
 from graphlib import TopologicalSorter
 from typing import Any
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiMemberType,
     AbiParameter,
     StarknetArray,
@@ -14,8 +14,8 @@ from starknet_abi.abi_types import (
     StarknetTuple,
     StarknetType,
 )
-from starknet_abi.decoding_types import AbiEvent, AbiFunction
-from starknet_abi.exceptions import InvalidAbiError
+from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction
+from nethermind.starknet_abi.exceptions import InvalidAbiError
 
 
 def group_abi_by_type(abi_json: list[dict]) -> defaultdict[AbiMemberType, list[dict]]:
@@ -227,7 +227,7 @@ def extract_inner_type(abi_type: str) -> str:
     Extracts the inner type from a type string
 
     .. doctest::
-        >>> from starknet_abi.parse import extract_inner_type
+        >>> from nethermind.starknet_abi.parse import extract_inner_type
         >>> extract_inner_type("core::array::Array::<core::integer::u256>")
         'core::integer::u256'
 

@@ -2,13 +2,13 @@ import json
 
 import pytest
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetCoreType,
     StarknetStruct,
     StarknetTuple,
 )
-from starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.core import StarknetAbi
 from tests.test_abi_parsing.utils import get_abis_for_version
 from tests.utils import PARENT_DIR
 

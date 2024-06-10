@@ -1,7 +1,7 @@
 import json
 
-from starknet_abi.core import StarknetAbi
-from starknet_abi.decode import decode_from_params
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.decode import decode_from_params
 
 from .abi import STARKNET_ETH_ABI_JSON
 

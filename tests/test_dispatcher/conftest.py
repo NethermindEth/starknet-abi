@@ -1,7 +1,7 @@
 import pytest
 
-from starknet_abi.core import StarknetAbi
-from starknet_abi.dispatch import DecodingDispatcher
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.dispatch import DecodingDispatcher
 from tests.utils import load_abi
 
 

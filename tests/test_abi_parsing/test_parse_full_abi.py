@@ -1,14 +1,14 @@
 import json
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
     StarknetStruct,
 )
-from starknet_abi.core import StarknetAbi
-from starknet_abi.decoding_types import AbiEvent, AbiFunction
-from starknet_abi.parse import parse_abi_function
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction
+from nethermind.starknet_abi.parse import parse_abi_function
 from tests.abi import (
     NO_STRUCT_ABI_DEFINITION,
     NO_STRUCT_CLASS_HASH,

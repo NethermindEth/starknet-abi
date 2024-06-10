@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from starknet_abi.abi_types import AbiParameter, StarknetType
-from starknet_abi.decode import decode_from_params, decode_from_types
-from starknet_abi.encode import encode_from_params
-from starknet_abi.exceptions import InvalidCalldataError
-from starknet_abi.utils import starknet_keccak
+from nethermind.starknet_abi.abi_types import AbiParameter, StarknetType
+from nethermind.starknet_abi.decode import decode_from_params, decode_from_types
+from nethermind.starknet_abi.encode import encode_from_params
+from nethermind.starknet_abi.exceptions import InvalidCalldataError
+from nethermind.starknet_abi.utils import starknet_keccak
 
 
 @dataclass(slots=True)
@@ -61,8 +61,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
@@ -87,8 +87,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
@@ -126,8 +126,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType, StarknetArray
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType, StarknetArray
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("add_vals", StarknetArray(StarknetCoreType.U8))],
@@ -173,8 +173,8 @@ class AbiEvent:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiEvent
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiEvent
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_event = AbiEvent(
             ...     name="Create",
             ...     data=[AbiParameter("address", StarknetCoreType.ContractAddress)],
