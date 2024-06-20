@@ -1,23 +1,24 @@
 # Starknet ABI
 
-Starknet ABI is a Python library for encoding and decoding StarkNet contract calls and events.
-
-Built for efficient and rapid indexing of StarkNet transactions, Starknet ABI is simple and fast.
+Starknet ABI is a Python library for encoding and decoding Starknet contract calls and events. It is built for efficient and rapid indexing of Starknet transactions, offering simplicity and speed.
 
 ## Installation
 
+To install Starknet ABI, run the following command:
+
 ```bash
-pip install starknet-abi
+python -m pip install starknet-abi
 ```
 
 ## Documentation
-[Starkent-ABI Docs](https://nethermindETH.github.io/starknet-abi)
 
+For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://nethermindETH.github.io/starknet-abi).
 
 ## Features
-* Encode and decode StarkNet contract calls and events
-* Parse all versions of Cairo ABI JSON into shared datastructure
-* Identifying Type strings for each Functions allow you to detect which ABIs have identical types
-* Abi Decoding dispatcher
-  * Efficiently load thousands of indexed ABIs into memory
-  * Decoding Dispatcher Datastructure can be pickled and reused in data pipelines
+
+- **Encode and Decode**: Easily encode and decode Starknet contract calls and events.
+- **Comprehensive Parsing**: Parse all versions of Cairo ABI JSON into a shared data structure.
+- **Type Identification**: Identify type strings for each function, enabling the detection of ABIs with identical types.
+- **ABI Decoding Dispatcher**:
+  - Efficiently load thousands of indexed ABIs into memory.
+  - Pickle and reuse the decoding dispatcher data structure in data pipelines.
