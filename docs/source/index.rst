@@ -28,13 +28,6 @@ Table of Contents
     Quickstart
     Changelog
 
-.. toctree::
-    :maxdepth: 1
-    :caption: Library Guides
-    :glob:
-
-    guides/*
-
 
 .. toctree::
     :maxdepth: 1
