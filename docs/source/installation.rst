@@ -1,35 +1,30 @@
-.. _installation:
-
 Installation
 ============
 
 .. note::
-    As soon as the library is stable, builds will be published to PyPi.  Until then, the development installation
-    instructions below can be used.
+    Once the library is stable, builds will be published to PyPi. In the meantime, you can follow the development installation instructions.
 
-
-Development Installation
+Development installation
 ------------------------
 
 .. code-block:: console
 
-    git clone https://github.com/nethermindETH/starknet-abi.git
+    git clone https://github.com/nethermindEth/starknet-abi
     cd starknet-abi
-    poetry env use python3.12  # Supports any version of python >= 3.10, but 3.12 is fastest
+    poetry env use python3.12  # Supports any version of python >= 3.10, but 3.12 is the fastest
     poetry install --all-extras
 
-
-Development Guide
+Development guide
 -----------------
 
-**Linting & Pre-commits**
+**Linting & pre-commits**
 
 .. code-block:: console
 
     poetry run pre-commit install
     poetry run pre-commit run --all-files
 
-**Unit Testing**
+**Unit testing**
 
 .. code-block:: console
 
@@ -38,13 +33,13 @@ Development Guide
     # Run only ABI Versioning Tests
     poetry run pytest tests/test_abi_versions/
 
-**Running Doctests**
+**Running doctests**
 
 .. code-block:: console
 
     poetry run pytest --doctest-modules starknet_abi/
 
-**Building Documentation**
+**Building documentation**
 
 .. code-block:: console
 

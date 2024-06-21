@@ -1,47 +1,33 @@
-.. meta::
-   :description: **starknet-abi** is a Python library for performing abi encoding and decoding for StarkNet contracts.
+Welcome to the starknet-abi documentation!
+==========================================
 
+The `starknet-abi` library provides utilities for encoding and decoding Starknet contract calls and events.
 
-
-Welcome
-=======
-
-
-
-.. NOTE::
-    This codebase is currently released as a beta, and is under development.
-
+.. note::
+    This library is currently in beta and is under development. If you find a bug or have suggestions for new features, please `open an issue <https://github.com/NethermindEth/starknet-abi/issues/new>`_ or submit a `pull request <https://github.com/NethermindEth/starknet-abi/pulls>`_.
 
 - Ready to code? → :ref:`quickstart`
 - Want to chat? → `Discord`_
 - Read the source? → `Github`_
 
-
-Table of Contents
+Table of contents
 -----------------
 
 .. toctree::
     :maxdepth: 1
-    :caption: Intro
-
-    Installation
-    Quickstart
-    Changelog
-
-
-.. toctree::
-    :maxdepth: 1
-    :caption: API Reference
     :glob:
 
+    installation
+    quickstart
     api/*
+    releases
 
 Indices and tables
 ------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+- :ref:`API Glossary <genindex>`
+- :ref:`modindex`
+- :ref:`search`
 
 .. _Discord: https://discord.com/invite/ENPVVmkwKG
-.. _Github: https://github.com/nethermindETH/starknet-abi
+.. _Github: https://github.com/nethermindEth/starknet-abi

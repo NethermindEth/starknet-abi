@@ -1,4 +1,4 @@
-Abi Types
+ABI Types
 =========
 
 .. autoclass:: starknet_abi.abi_types.AbiParameter
