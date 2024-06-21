@@ -99,7 +99,6 @@ class AbiFunction:
 
         :param calldata:
         :param result:
-        :return:
         """
         _calldata = calldata.copy()
         decoded_inputs = decode_from_params(self.inputs, _calldata)

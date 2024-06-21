@@ -31,12 +31,12 @@ Table of contents
 
     api/*
 
-Indices and tables
-------------------
+.. toctree::
+    :maxdepth: 1
+    :caption: Reference
 
-- :ref:`API Glossary <genindex>`
-- :ref:`modindex`
-- :ref:`search`
+    API Glossary <genindex>
+    search
 
 .. _Discord: https://discord.com/invite/ENPVVmkwKG
 .. _Github: https://github.com/nethermindEth/starknet-abi

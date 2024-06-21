@@ -12,7 +12,7 @@ from starknet_abi.exceptions import InvalidCalldataError
 def _id_hash(id_str: str) -> bytes:
     """
     Python's builtin hash() function is seeded with a random value at interpreter startup, so it is not
-    consistent across runs.  Using a consistent hash allows a DecodingDispatcher to be pickled and
+    consistent across runs. Using a consistent hash allows a DecodingDispatcher to be pickled and
     cached between uses
     """
 
@@ -157,7 +157,6 @@ class DecodingDispatcher:
         is cached and shared between the identical functions
 
         :param abi:
-        :return:
         """
         class_id = abi.class_hash[-8:]
 
@@ -185,7 +184,6 @@ class DecodingDispatcher:
         :param result: array of calldata as intergers
         :param function_selector: function_selector of the trace or transaction
         :param class_hash:  class hash of the trace or transaction
-        :return:
         """
 
         class_dispatcher = self.class_ids.get(class_hash[-8:])
@@ -238,7 +236,6 @@ class DecodingDispatcher:
         :param data:
         :param keys:
         :param class_hash:
-        :return:
         """
         class_dispatcher = self.class_ids.get(class_hash[-8:])
         if class_dispatcher is None:

@@ -25,6 +25,7 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
     calldata array is recursively passed between type decoders, so this array is modified during decoding
 
     .. doctest::
+
         >>> from starknet_abi.decode import decode_core_type, StarknetCoreType
         >>> decode_core_type(StarknetCoreType.Bool, [0])
         False
@@ -35,7 +36,6 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
 
     :param decode_type:  Starknet Core Type to Decode
     :param calldata:  Mutable reference to calldata array. **WARN -- Array is Consumed by Method**
-    :return:
     """
     try:
         match decode_type:
@@ -120,6 +120,7 @@ def decode_from_types(
         popped off the stack as decoding occurs
 
     .. doctest::
+
         >>> from starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
         >>> decode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [3, 123, 244, 210, 0])
         [[123, 244, 210], False]
@@ -132,7 +133,6 @@ def decode_from_types(
 
     :param types:  Sequence of StarknetType to decode
     :param calldata: Mutable Array of Calldata
-    :return:
     """
 
     output_data: list[Any] = []

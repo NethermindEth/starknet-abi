@@ -30,7 +30,7 @@ Development guide
 
     poetry run pytest tests/
 
-    # Run only ABI Versioning Tests
+    # Run only ABI versioning tests
     poetry run pytest tests/test_abi_versions/
 
 **Running doctests**

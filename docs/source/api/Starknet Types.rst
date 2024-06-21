@@ -1,11 +1,7 @@
 Starknet Types
 ==============
 
-Python Representations of Starknet Types that are present in ABIs.  Parsing Functions
-convert ABI Json into these Python Types.  Multiple versions of Cairo ABIs are parsed into
-the same format to make decoding and encoding seamless across versions, requiring only the
-ABI Parsing logic to change across versions
-
+Python representations of Starknet Types used in ABIs. Parsing functions convert ABI JSON into these Python types. Multiple versions of Cairo ABIs are parsed into the same format, ensuring seamless decoding and encoding across different versions, requiring only the ABI parsing logic to be updated for each new version.
 
 .. autoclass:: starknet_abi.abi_types.StarknetCoreType
     :members:
@@ -30,4 +26,3 @@ ABI Parsing logic to change across versions
 .. autoclass:: starknet_abi.abi_types.StarknetStruct
     :members:
     :exclude-members: __init__
-
