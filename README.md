@@ -13,11 +13,12 @@ poetry env use python3.12  # Supports any version of python >= 3.10, but 3.12 is
 poetry install --all-extras
 ```
 
-## Getting Started
+## Quickstart
 
 ### Parse Starknet ABI JSON
 
-Get the [Starknet-ETH ABI JSON](https://voyager.online/class/0x05ffbcfeb50d200a0677c48a129a11245a3fc519d1d98d76882d1c9a1b19c6ed) from Voyager and save it to a file named `abi.json`. Then, create a `StarknetABI` instance from the ABI JSON file:
+1. Get the [Starknet-ETH ABI JSON](https://voyager.online/class/0x05ffbcfeb50d200a0677c48a129a11245a3fc519d1d98d76882d1c9a1b19c6ed) from Voyager and save it to a file named `abi.json`.
+2. Create a `StarknetABI` instance from the ABI JSON file:
 
 ```python
 import json
@@ -26,7 +27,7 @@ from starknet_abi.core import StarknetAbi
 with open("abi.json") as f:
     raw_abi = json.load(f)
 
-# Create StarknetABI instance
+# Create a StarknetABI instance
 starknet_eth_abi = StarknetAbi.from_json(raw_abi, "starknet_eth", b"")
 
 # View the ABI functions
