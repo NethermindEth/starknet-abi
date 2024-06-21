@@ -20,8 +20,8 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
     decode_type: StarknetCoreType, calldata: list[int]
 ) -> str | int | bool:
     """
-    Decodes Calldata using Starknet Core Type.  Takes in Two parameters, a StarknetCoreType, and a mutable reference
-    to a calldata array.  When decoding, calldata is popped off the top of the calldata array.  This reference to the
+    Decodes Calldata using Starknet Core Type. Takes in two parameters, a StarknetCoreType, and a mutable reference
+    to a calldata array. When decoding, calldata is popped off the top of the calldata array. This reference to the
     calldata array is recursively passed between type decoders, so this array is modified during decoding
 
     .. doctest::

@@ -13,6 +13,31 @@ poetry env use python3.12  # Supports any version of python >= 3.10, but 3.12 is
 poetry install --all-extras
 ```
 
+## Getting Started
+
+### Parse Starknet ABI JSON
+
+Get the [Starknet-ETH ABI JSON](https://voyager.online/class/0x05ffbcfeb50d200a0677c48a129a11245a3fc519d1d98d76882d1c9a1b19c6ed) from Voyager and save it to a file named `abi.json`. Then, create a `StarknetABI` instance from the ABI JSON file:
+
+```python
+import json
+from starknet_abi.core import StarknetAbi
+
+with open("abi.json") as f:
+    raw_abi = json.load(f)
+
+# Create StarknetABI instance
+starknet_eth_abi = StarknetAbi.from_json(raw_abi, "starknet_eth", b"")
+
+# View the ABI functions
+print(starknet_eth_abi.functions)
+
+# View the ABI implemented interfaces
+print(starknet_eth_abi.implemented_interfaces)
+```
+
+For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://nethermindEth.github.io/starknet-abi).
+
 ## Features
 
 - **Encode and Decode**: Easily encode and decode Starknet contract calls and events.
@@ -21,10 +46,6 @@ poetry install --all-extras
 - **ABI Decoding Dispatcher**:
   - Efficiently load thousands of indexed ABIs into memory.
   - Pickle and reuse the decoding dispatcher data structure in data pipelines.
-
-## Getting Started
-
-For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://nethermindEth.github.io/starknet-abi).
 
 ## Contributing
 

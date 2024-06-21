@@ -11,7 +11,7 @@ Get Started
 
 - :ref:`quickstart` → Dive into coding with our easy-to-follow guide.
 - `Discord`_ → Join our community to ask questions and share ideas.
-- `Github`_ → Explore the source code and contribute.
+- `GitHub`_ → Explore the source code and contribute.
 
 Table of contents
 -----------------
@@ -30,13 +30,7 @@ Table of contents
     :glob:
 
     api/*
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Reference
-
     API Glossary <genindex>
-    search
 
 .. _Discord: https://discord.com/invite/ENPVVmkwKG
-.. _Github: https://github.com/nethermindEth/starknet-abi
+.. _GitHub: https://github.com/nethermindEth/starknet-abi

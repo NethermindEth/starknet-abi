@@ -18,10 +18,10 @@ Development TODO
 - Complete testing for `DecodingDispatcher` class
 - Optimize the decode and encode if tree
   - The decoding and encoding currently performs if `isinstance(decode_type, "StarknetType")`
-  - The order of these if statements has not been optimized, should be reordered based on `ABI Type` frequency statistics
+  - The order of these if statements have not been optimized and should be reordered based on ABI Type frequency statistics
 - Improve quality of documentation
-  - Add usage guides covering common use-cases like decoding a specific event for a specific contract
-- Improve quality of benchmarks, and add more complex encoding and decoding benchmarks
+  - Add usage guides covering common use cases like decoding a specific event for a specific contract
+- Improve the quality of benchmarks and add more complex encoding and decoding benchmarks
 
 Possible future features
 ------------------------
