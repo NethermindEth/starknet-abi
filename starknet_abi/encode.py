@@ -41,7 +41,6 @@ def encode_core_type(  # pylint: disable=too-many-return-statements,too-many-bra
 
     :param encode_type:
     :param value:
-    :return:
     """
 
     try:

@@ -61,6 +61,7 @@ class StarknetCoreType(Enum):
         parses a core::integer::<type_str> into a Starknet Core type
 
         .. doctest::
+
             >>> from starknet_abi.abi_types import StarknetCoreType
             >>> StarknetCoreType.int_from_string('u16')
             StarknetCoreType.U16
@@ -68,7 +69,6 @@ class StarknetCoreType(Enum):
             StarknetCoreType.U256
 
         :param type_str:
-        :return:
         """
         match type_str:
             case "u8":
@@ -104,7 +104,6 @@ class StarknetCoreType(Enum):
             >>> StarknetCoreType.StorageAddress.id_str()
             'StorageAddress'
 
-        :return:
         """
         return self.name
 
@@ -118,7 +117,6 @@ class StarknetCoreType(Enum):
             >>> StarknetCoreType.U256.max_value()
             115792089237316195423570985008687907853269984665640564039457584007913129639935
 
-        :return:
         """
         if self.name.startswith("U"):
             return 2 ** (8 * self.value) - 1
@@ -140,7 +138,6 @@ class StarknetArray:
     """
     Dataclass representing a Starknet ABI Array.  Both core::array::Array and core::array::Span are mapped to this
     dataclass since their ABI Encoding & Decoding are identical
-
     """
 
     inner_type: "StarknetType"
@@ -155,7 +152,6 @@ class StarknetArray:
             >>> felt_array.id_str()
             '[Felt]'
 
-        :return:
         """
         return f"[{self.inner_type.id_str()}]"
 
@@ -179,7 +175,6 @@ class StarknetOption:
             >>> uint_option.id_str()
             'Option[U128]'
 
-        :return:
         """
         return f"Option[{self.inner_type.id_str()}]"
 
@@ -219,7 +214,6 @@ class StarknetEnum:
             >>> type_enum.id_str()
             'Enum[Class:ClassHash,Contract:ContractAddress]'
 
-        :return:
         """
         variants_str = ",".join(
             [
@@ -247,6 +241,7 @@ class StarknetTuple:
         Returns the string representation of a tuple of types
 
         .. doctest::
+
             >>> from starknet_abi.abi_types import StarknetTuple, StarknetCoreType
             >>> uint_tuple = StarknetTuple([StarknetCoreType.U32, StarknetCoreType.U32])
             >>> uint_tuple.id_str()
@@ -258,7 +253,6 @@ class StarknetTuple:
             >>> nested_tuple.id_str()
             '(U256,(U8,U8))'
 
-        :return:
         """
         members_str = ",".join([member.id_str() for member in self.members])
         return f"({members_str})"
@@ -277,6 +271,7 @@ class StarknetStruct:
         """
 
         .. doctest::
+
             >>> from starknet_abi.abi_types import StarknetStruct, StarknetCoreType, StarknetArray, AbiParameter
             >>> struct_def = StarknetStruct(
             ...     name="PackageVersion",
@@ -288,7 +283,6 @@ class StarknetStruct:
             >>> struct_def.id_str()
             '{version_hash:Felt,version:[U8]}'
 
-        :return:
         """
         members_str = ",".join(
             [f"{member.name}:{member.type.id_str()}" for member in self.members]
@@ -326,6 +320,5 @@ class AbiParameter:
             >>> from_param.id_str()
             'from:ContractAddress'
 
-        :return:
         """
         return f"{self.name}:{self.type.id_str()}"

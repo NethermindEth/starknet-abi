@@ -1,4 +1,5 @@
 .idea/
+.DS_Store
 
 # Venvs  -- Project & Benchmarks
 .venv/
@@ -10,7 +11,7 @@ benchmarks/*.json
 __pycache__
 
 # Docs
-_build/
+build/
 
 # Build
 dist/
