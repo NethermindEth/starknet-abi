@@ -47,7 +47,7 @@ Decode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.decode import AbiParameter, decode_from_params, StarknetCoreType
+    >>> from starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
     >>> decode_from_params(
     ...     [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
     ...     [123456, 654321]
@@ -69,5 +69,41 @@ Decode transaction calldata
 
 Encode transaction calldata
 ---------------------------
+
+1. Encode core types:
+
+.. code-block:: python
+
+    >>> from starknet_abi.encode import encode_core_type, StarknetCoreType
+    >>> encode_core_type(StarknetCoreType.Bool, False)
+    [0]
+    >>> encode_core_type(StarknetCoreType.U256, 12345)
+    [12345, 0]
+    >>> encode_core_type(StarknetCoreType.Felt, "0x0000000000000000000000000000000000000000000000000000000000000100")
+    [256]
+
+2. Encode from parameters:
+
+.. code-block:: python
+
+    >>> from starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
+    >>> encode_from_params(
+    ...     [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
+    ...     {"a": 123456, "b": 654321}
+    ... )
+    [123456, 654321]
+
+3. Encode from types:
+
+.. code-block:: python
+
+    >>> from starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
+    >>> encode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [[123, 244, 210], False])
+    [3, 123, 244, 210, 0]
+    >>> encode_from_types(
+    ...     [StarknetCoreType.ContractAddress, StarknetCoreType.U256, StarknetCoreType.Bool],
+    ...     ["0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7", 250000, True]
+    ... )
+    [2087021424722619777119509474943472645767659996348769578120564519014510906823, 250000, 0, 1]
 
 .. _Starknet-ETH: https://voyager.online/class/0x05ffbcfeb50d200a0677c48a129a11245a3fc519d1d98d76882d1c9a1b19c6ed

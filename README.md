@@ -37,6 +37,82 @@ print(starknet_eth_abi.functions)
 print(starknet_eth_abi.implemented_interfaces)
 ```
 
+### Decode transaction calldata
+
+1. Decode core types:
+
+```python
+>>> from starknet_abi.decode import decode_core_type, StarknetCoreType
+>>> decode_core_type(StarknetCoreType.Bool, [0])
+False
+>>> decode_core_type(StarknetCoreType.U256, [12345, 0])
+12345
+>>> decode_core_type(StarknetCoreType.Felt, [256])
+'0x0000000000000000000000000000000000000000000000000000000000000100'
+```
+
+2. Decode from parameters:
+
+```python
+>>> from starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
+>>> decode_from_params(
+        [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
+        [123456, 654321]
+    )
+{'a': 123456, 'b': 654321}
+```
+
+3. Decode from types:
+
+```python
+>>> from starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
+>>> decode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [3, 123, 244, 210, 0])
+[[123, 244, 210], False]
+>>> decode_from_types(
+        [StarknetCoreType.ContractAddress, StarknetCoreType.U256, StarknetCoreType.Bool],
+        [0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, 250_000, 0, 1]
+    )
+['0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', 250000, True]
+```
+
+### Encode transaction calldata
+
+1. Encode core types:
+
+```python
+>>> from starknet_abi.encode import encode_core_type, StarknetCoreType
+>>> encode_core_type(StarknetCoreType.Bool, False)
+[0]
+>>> encode_core_type(StarknetCoreType.U256, 12345)
+[12345, 0]
+>>> encode_core_type(StarknetCoreType.Felt, "0x0000000000000000000000000000000000000000000000000000000000000100")
+[256]
+```
+
+2. Encode from parameters:
+
+```python
+>>> from starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
+>>> encode_from_params(
+        [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
+        {"a": 123456, "b": 654321}
+    )
+[123456, 654321]
+```
+
+3. Encode from types:
+
+```python
+>>> from starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
+>>> encode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [[123, 244, 210], False])
+[3, 123, 244, 210, 0]
+>>> encode_from_types(
+        [StarknetCoreType.ContractAddress, StarknetCoreType.U256, StarknetCoreType.Bool],
+        ["0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7", 250000, True]
+    )
+[2087021424722619777119509474943472645767659996348769578120564519014510906823, 250000, 0, 1]
+```
+
 For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://nethermindEth.github.io/starknet-abi).
 
 ## Features
