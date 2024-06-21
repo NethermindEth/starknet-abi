@@ -60,7 +60,6 @@ class ClassDispatcher:
 @dataclass(slots=True)
 class DecodingDispatcher:
     """
-
     Decoding Dispatcher Class for Efficiently Decoding several thousand ABIs at once.  Maps Class Ids to Function
     and Event Ids.  For more efficient in-memory representation, the last 8 bytes of class hashes and selectors
     are used as Class/Function/Event Ids.
@@ -105,7 +104,7 @@ class DecodingDispatcher:
         For each function, in the ABI, compute the id_str(), and hash that id-str.  If the hash of the id-str is not
         present in DecodingDispatcher.function_types, add it.
 
-        :param abi: Starknet ABI to Add
+        :param abi: Starknet ABI to add
         :return: dict[function_signature[-8:]: FunctionDispatchInfo]
         """
 

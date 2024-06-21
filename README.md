@@ -28,7 +28,7 @@ For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://
 
 ## Contributing
 
-We value community contributions and are eager to support your involvement. If you find a bug or have suggestions for new features, please [open an issue](https://github.com/NethermindEth/starknet-abi/issues/new) or submit a [pull request](https://github.com/NethermindEth/starknet-abi/pulls).
+We value community contributions and are eager to support your involvement. If you encounter any bugs or have suggestions for new features, please [open an issue](https://github.com/NethermindEth/starknet-abi/issues/new) or submit a [pull request](https://github.com/NethermindEth/starknet-abi/pulls).
 
 ## License
 
