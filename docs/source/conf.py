@@ -47,7 +47,7 @@ html_theme_options = {
     "use_repository_button": True,
     "repository_url": "https://github.com/nethermindEth/starknet-abi",
     "use_download_button": False,
-    "home_page_in_toc": True
+    "home_page_in_toc": True,
 }
 
 html_static_path = ["_static"]

@@ -80,6 +80,9 @@ disable=[
     "R0801"
 ]
 
+[tool.pylint.imports]
+known-third-party = ["nethermind"]
+
 
 [tool.pylint.design]
 max-args = 9  # Maximum number of arguments for function / method.
