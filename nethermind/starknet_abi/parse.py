@@ -21,8 +21,6 @@ from nethermind.starknet_abi.exceptions import InvalidAbiError
 def group_abi_by_type(abi_json: list[dict]) -> defaultdict[AbiMemberType, list[dict]]:
     """
     Groups ABI JSON by ABI Type.  If type is 'struct' or 'enum', it is grouped as a 'type_def'
-
-    :return:
     """
     grouped: defaultdict[AbiMemberType, list[dict]] = defaultdict(list)
 
@@ -82,7 +80,6 @@ def topo_sort_type_defs(type_defs: list[dict]) -> list[dict]:
     it raises a detailed error message with the ABI Type that is not defined.
 
     :param type_defs:
-    :return:
     """
     type_graph = _build_type_graph(type_defs)
     sorted_defs = TopologicalSorter(type_graph).static_order()
@@ -115,7 +112,6 @@ def parse_enums_and_structs(
     Parses an **ordered** array of ABI structs into a dictionary of StarknetStructs, mapping struct name to struct.
 
     :param abi_structs:
-    :return:
     """
 
     output_types: dict[str, StarknetStruct | StarknetEnum] = {}
@@ -170,10 +166,8 @@ def _parse_tuple(
     abi_type: str, custom_types: dict[str, StarknetStruct | StarknetEnum]
 ) -> StarknetTuple:
     """
-
     :param abi_type:
     :param custom_types:
-    :return:
     """
 
     def _is_named_tuple(type_str):
@@ -365,7 +359,6 @@ def parse_abi_function(
 
     :param abi_function:
     :param custom_types:
-    :return:
     """
 
     parsed_inputs = parse_abi_parameters(
@@ -394,7 +387,6 @@ def parse_abi_event(
 
     :param abi_event:
     :param custom_types:
-    :return:
     """
     if "kind" in abi_event:  # Version 2 Abi
         if abi_event["kind"] == "struct":

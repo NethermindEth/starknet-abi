@@ -20,8 +20,8 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
     decode_type: StarknetCoreType, calldata: list[int]
 ) -> str | int | bool:
     """
-    Decodes Calldata using Starknet Core Type.  Takes in Two parameters, a StarknetCoreType, and a mutable reference
-    to a calldata array.  When decoding, calldata is popped off the top of the calldata array.  This reference to the
+    Decodes Calldata using Starknet Core Type. Takes in two parameters, a StarknetCoreType, and a mutable reference
+    to a calldata array. When decoding, calldata is popped off the top of the calldata array. This reference to the
     calldata array is recursively passed between type decoders, so this array is modified during decoding
 
     .. doctest::
@@ -35,7 +35,6 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
 
     :param decode_type:  Starknet Core Type to Decode
     :param calldata:  Mutable reference to calldata array. **WARN -- Array is Consumed by Method**
-    :return:
     """
     try:
         match decode_type:
@@ -132,7 +131,6 @@ def decode_from_types(
 
     :param types:  Sequence of StarknetType to decode
     :param calldata: Mutable Array of Calldata
-    :return:
     """
 
     output_data: list[Any] = []

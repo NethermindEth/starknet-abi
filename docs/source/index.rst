@@ -1,40 +1,28 @@
-.. meta::
-   :description: **starknet-abi** is a Python library for performing abi encoding and decoding for StarkNet contracts.
+Welcome to the Starknet ABI Documentation!
+==========================================
 
+The Starknet ABI library provides utilities for encoding and decoding Starknet contract calls and events.
 
+.. note::
+    This library is currently in beta and is under development. If you encounter any bugs or have suggestions for new features, please `open an issue <https://github.com/NethermindEth/starknet-abi/issues/new>`_ or submit a `pull request <https://github.com/NethermindEth/starknet-abi/pulls>`_  on our GitHub repository.
 
-Welcome
-=======
+Get Started
+-----------
 
+- :ref:`quickstart` → Dive into coding with our easy-to-follow guide.
+- `Discord`_ → Join our community to ask questions and share ideas.
+- `GitHub`_ → Explore the source code and contribute.
 
-
-.. NOTE::
-    This codebase is currently released as a beta, and is under development.
-
-
-- Ready to code? → :ref:`quickstart`
-- Want to chat? → `Discord`_
-- Read the source? → `Github`_
-
-
-Table of Contents
+Table of contents
 -----------------
 
 .. toctree::
-    :maxdepth: 1
-    :caption: Intro
+    :maxdepth: 2
+    :caption: Introduction
 
-    Installation
-    Quickstart
-    Changelog
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Library Guides
-    :glob:
-
-    guides/*
-
+    installation
+    quickstart
+    releases
 
 .. toctree::
     :maxdepth: 1
@@ -42,13 +30,7 @@ Table of Contents
     :glob:
 
     api/*
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    API Glossary <genindex>
 
 .. _Discord: https://discord.com/invite/ENPVVmkwKG
-.. _Github: https://github.com/nethermindETH/starknet-abi
+.. _GitHub: https://github.com/nethermindEth/starknet-abi

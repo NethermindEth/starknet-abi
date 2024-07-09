@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../starknet_abi"))
+sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -40,12 +40,14 @@ html_title = "Starknet ABI Documentation"
 html_theme_options = {
     "show_toc_level": 2,
     "logo": {
-        "repository_url": "https://github.com/nethermindEth/starknet-abi",
-        "use_repository_button": True,
         "image_light": "_static/logo-light.svg",
         "image_dark": "_static/logo-dark.svg",
         "link": "https://nethermind.io",
     },
+    "use_repository_button": True,
+    "repository_url": "https://github.com/nethermindEth/starknet-abi",
+    "use_download_button": False,
+    "home_page_in_toc": True
 }
 
 html_static_path = ["_static"]

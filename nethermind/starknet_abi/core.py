@@ -37,12 +37,11 @@ class StarknetAbi:
         cls, abi_json: list[dict[str, Any]], abi_name: str, class_hash: bytes
     ) -> "StarknetAbi":
         """
-        Parse a StarknetAbi From the JSON ABI of the class.
+        Parse a StarknetABI From the JSON ABI of the class.
 
         :param abi_json:
         :param abi_name:
         :param class_hash:
-        :return:
         """
         grouped_abi = group_abi_by_type(abi_json)
 
