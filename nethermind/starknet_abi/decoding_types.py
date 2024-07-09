@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from starknet_abi.abi_types import AbiParameter, StarknetType
-from starknet_abi.decode import decode_from_params, decode_from_types
-from starknet_abi.encode import encode_from_params
-from starknet_abi.exceptions import InvalidCalldataError
-from starknet_abi.utils import starknet_keccak
+from nethermind.starknet_abi.abi_types import AbiParameter, StarknetType
+from nethermind.starknet_abi.decode import decode_from_params, decode_from_types
+from nethermind.starknet_abi.encode import encode_from_params
+from nethermind.starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
+from nethermind.starknet_abi.utils import starknet_keccak
 
 
 @dataclass(slots=True)
@@ -47,7 +47,13 @@ class AbiFunction:
     inputs: Sequence[AbiParameter]
     outputs: Sequence[StarknetType]
 
-    def __init__(self, name, inputs, outputs, abi_name=None):
+    def __init__(
+        self,
+        name: str,
+        inputs: list[AbiParameter],
+        outputs: list[StarknetType],
+        abi_name: str | None = None,
+    ):
         self.name = name
         self.abi_name = abi_name
         self.inputs = inputs
@@ -61,8 +67,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
@@ -87,8 +93,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
@@ -125,8 +131,8 @@ class AbiFunction:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiFunction
-            >>> from starknet_abi.abi_types import StarknetCoreType, StarknetArray
+            >>> from nethermind.starknet_abi.decoding_types import AbiFunction
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType, StarknetArray
             >>> add_function = AbiFunction(
             ...    name="add",
             ...    inputs=[AbiParameter("add_vals", StarknetArray(StarknetCoreType.U8))],
@@ -152,18 +158,23 @@ class AbiEvent:
     abi_name: str | None
     signature: bytes
 
-    keys: Sequence[AbiParameter]  # Not sure how to handle keys yet....
-    data: Sequence[AbiParameter]
+    parameters: list[str]
+    keys: dict[str, StarknetType]
+    data: dict[str, StarknetType]
 
     def __init__(
         self,
         name: str,
-        data: list[AbiParameter],
-        keys: list[AbiParameter] | None = None,
+        parameters: list[str],
+        data: dict[str, StarknetType],
+        keys: dict[str, StarknetType] | None = None,
+        abi_name: str | None = None,
     ):
         self.name = name
         self.data = data
-        self.keys = keys or []
+        self.parameters = parameters
+        self.keys = keys or {}
+        self.abi_name = abi_name
         self.signature = starknet_keccak(self.name.encode())
 
     def id_str(self):
@@ -172,40 +183,65 @@ class AbiEvent:
 
         .. doctest::
 
-            >>> from starknet_abi.decoding_types import AbiEvent
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.decoding_types import AbiEvent
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> add_event = AbiEvent(
             ...     name="Create",
-            ...     data=[AbiParameter("address", StarknetCoreType.ContractAddress)],
+            ...     parameters=["address"],
+            ...     data={"address": StarknetCoreType.ContractAddress},
             ... )
             >>> add_event.id_str()
             'Event(address:ContractAddress)'
 
         :return: Event(<data keys>)
         """
-        return f"Event({','.join([param.id_str() for param in self.data])})"
+        event_params = []
+        for param in self.parameters:
+            if param in self.data:
+                event_params.append(f"{param}:{self.data[param].id_str()}")
+            elif param in self.keys:
+                event_params.append(f"<{param}>:{self.keys[param].id_str()}")
+            else:
+                raise TypeDecodeError(
+                    f"Event Parameter {param} not part of event keys or Data"
+                )
 
-    def decode(
-        self,
-        data: list[int],
-    ) -> DecodedEvent:
+        return f"Event({','.join(event_params)})"
+
+    def decode(self, data: list[int], keys: list[int]) -> DecodedEvent:
         """
         Decode the keys and data of an event.
 
         :param data: Data array for decoding
+        :param keys: Optional data array of event keys
         :return: DecodedEvent
         """
 
         _data = data.copy()
+        _keys = keys[1:].copy()  # Key[0] is the event signature
 
-        decoded_event = decode_from_params(self.data, _data)
+        decoded_data = {}
 
-        if len(_data) > 0:
+        for param in self.parameters:
+            if param in self.data:
+                decoded_data.update(
+                    {param: decode_from_types([self.data[param]], _data)[0]}
+                )
+            elif param in self.keys:
+                decoded_data.update(
+                    {param: decode_from_types([self.keys[param]], _keys)[0]}
+                )
+            else:
+                raise TypeDecodeError(
+                    f"Event Parameter {param} not present in Keys or Data for Event {self.name}"
+                )
+
+        if len(_data) != 0 or len(_keys) != 0:
             raise InvalidCalldataError(
-                f"Calldata Not Completely Consumed during Event Decoding: {_data}"
+                f"Calldata Not Completely Consumed decoding Event: {self.id_str()}"
             )
 
-        return DecodedEvent(abi_name=self.abi_name, name=self.name, data=decoded_event)
+        return DecodedEvent(abi_name=self.abi_name, name=self.name, data=decoded_data)
 
 
 @dataclass(slots=True)

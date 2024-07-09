@@ -6,7 +6,7 @@ authors = ["Eli Barbieri <eli@nethermind.io>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    {include = "starknet_abi"},
+    {include = "nethermind"},
 ]
 
 [tool.poetry.dependencies]
@@ -58,18 +58,20 @@ profile = "black"
 atomic = true
 include_trailing_comma = true
 use_parentheses = true
-src_paths = ["starknet_abi", "tests"]
+src_paths = ["nethermind", "tests"]
 filter_files = true
-known_first_party = "starknet_abi"
+known_first_party = "nethermind"
 
 
 [tool.pylint.main]
 max-line-length = 120
 jobs = 12
+
 ignore-paths = [ "^tests\\.*$", "^docs\\.*$", "^benchmarks\\.*$" ]
 py-version = "3.10"
 suggestion-mode = true
 disable=[
+    "C0301",  # Line too long -- Doctests need to have long lines
     "C0114",  # TODO: Comment in what these are
     "W1514",
     "R0903",
@@ -77,6 +79,9 @@ disable=[
     "W1203",
     "R0801"
 ]
+
+[tool.pylint.imports]
+known-third-party = ["nethermind"]
 
 
 [tool.pylint.design]
@@ -92,6 +97,8 @@ max-statements = 50  # Maximum number of statements in function / method body.
 min-public-methods = 2  # Minimum number of public methods for a class (see R0903).
 
 [tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
 exclude = [
     "^docs\\.py$",
     "^tests\\.py$",

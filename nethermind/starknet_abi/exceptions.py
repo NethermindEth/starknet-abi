@@ -10,11 +10,11 @@ class InvalidCalldataError(Exception):
 
     .. doctest::
 
-        >>> from starknet_abi.decode import decode_from_types, StarknetCoreType
+        >>> from nethermind.starknet_abi.decode import decode_from_types, StarknetCoreType
         >>> decode_from_types([StarknetCoreType.U256], [12345])
         Traceback (most recent call last):
         ...
-        starknet_abi.exceptions.InvalidCalldataError: Not Enough Calldata to decode StarknetCoreType.U256
+        nethermind.starknet_abi.exceptions.InvalidCalldataError: Not Enough Calldata to decode StarknetCoreType.U256
 
     """
 
@@ -28,12 +28,12 @@ class TypeDecodeError(Exception):
 
     .. doctest::
 
-        >>> from starknet_abi.decode import decode_from_types, StarknetCoreType
+        >>> from nethermind.starknet_abi.decode import decode_from_types, StarknetCoreType
 
         >>> decode_from_types([StarknetCoreType.Bool], [3])
         Traceback (most recent call last):
         ...
-        starknet_abi.exceptions.TypeDecodeError: Could not decode StarknetCoreType.Bool: Bool Value must be 0 or 1
+        nethermind.starknet_abi.exceptions.TypeDecodeError: Could not decode StarknetCoreType.Bool: Bool Value must be 0 or 1
 
     """
 
@@ -44,17 +44,17 @@ class TypeEncodeError(Exception):
 
     .. doctest::
 
-        >>> from starknet_abi.encode import encode_from_types, StarknetCoreType
+        >>> from nethermind.starknet_abi.encode import encode_from_types, StarknetCoreType
 
         >>> encode_from_types([StarknetCoreType.Bool], [{'a': 123}])
         Traceback (most recent call last):
         ...
-        starknet_abi.exceptions.TypeEncodeError: Cannot Encode Non-Boolean Value '{'a': 123}' to StarknetCoreType.Bool
+        nethermind.starknet_abi.exceptions.TypeEncodeError: Cannot Encode Non-Boolean Value '{'a': 123}' to StarknetCoreType.Bool
 
         >>> encode_from_types([StarknetCoreType.U16], [2**17])
         Traceback (most recent call last):
         ...
-        starknet_abi.exceptions.TypeEncodeError: Integer 131072 is out of range for StarknetCoreType.U16
+        nethermind.starknet_abi.exceptions.TypeEncodeError: Integer 131072 is out of range for StarknetCoreType.U16
 
     """
 

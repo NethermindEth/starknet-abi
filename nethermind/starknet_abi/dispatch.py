@@ -2,11 +2,11 @@ import hashlib
 from dataclasses import dataclass
 from typing import Sequence
 
-from starknet_abi.abi_types import AbiParameter, StarknetType
-from starknet_abi.core import StarknetAbi
-from starknet_abi.decode import decode_from_params, decode_from_types
-from starknet_abi.decoding_types import DecodedEvent, DecodedFunction
-from starknet_abi.exceptions import InvalidCalldataError
+from nethermind.starknet_abi.abi_types import AbiParameter, StarknetType
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.decode import decode_from_params, decode_from_types
+from nethermind.starknet_abi.decoding_types import DecodedEvent, DecodedFunction
+from nethermind.starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
 
 
 def _id_hash(id_str: str) -> bytes:
@@ -81,8 +81,9 @@ class DecodingDispatcher:
     event_types: dict[
         bytes,  # Result of _id_hash(type.id_str())
         tuple[
-            Sequence[AbiParameter],  # Parameters for Event Data
-            Sequence[AbiParameter],  # Parameters for Event Keys
+            Sequence[str],
+            dict[str, StarknetType],  # Parameters for Event Data
+            dict[str, StarknetType],  # Parameters for Event Keys
         ],
     ]
 
@@ -138,7 +139,9 @@ class DecodingDispatcher:
         for event in abi.events.values():
             event_type_id = _id_hash(event.id_str())
             if event_type_id not in self.event_types:
-                self.event_types.update({event_type_id: (event.data, event.keys)})
+                self.event_types.update(
+                    {event_type_id: (event.parameters, event.keys, event.data)}
+                )
 
             event_ids.update(
                 {
@@ -246,18 +249,38 @@ class DecodingDispatcher:
                 "Events require at least 1 key parameter as the selector"
             )
 
-        event_selector = keys.pop(0).to_bytes(length=32, byteorder="big")
+        event_selector = keys[0].to_bytes(length=32, byteorder="big")
 
         # These two should never fail if class_dispatcher is valid
         event_dispatcher = class_dispatcher.event_ids[event_selector[-8:]]
-        event_type = self.event_types[event_dispatcher.decoder_reference]
+        event_params, event_keys, event_data = self.event_types[
+            event_dispatcher.decoder_reference
+        ]
 
-        _data, _keys = data.copy(), keys.copy()
-        decoded_data = decode_from_params(event_type[0], _data)
+        _data = data.copy()
+        _keys = keys[1:].copy()  # Key[0] is the event signature
 
-        if len(_data) > 0:
+        decoded_data = {}
+
+        for param in event_params:
+            if param in event_data:
+                decoded_data.update(
+                    {param: decode_from_types([event_data[param]], _data)[0]}
+                )
+            elif param in event_keys:
+                decoded_data.update(
+                    {param: decode_from_types([event_keys[param]], _keys)[0]}
+                )
+            else:
+                raise TypeDecodeError(
+                    f"Event Parameter {param} not present in Keys or Data for "
+                    f"Event 0x{event_selector.hex()} for class 0x{class_hash.hex()}"
+                )
+
+        if len(_data) != 0 or len(_keys) != 0:
             raise InvalidCalldataError(
-                f"Calldata Remaining after decoding event data {data} from {event_type[0]}"
+                f"Calldata Not Completely Consumed decoding "
+                f"Event 0x{event_selector.hex()} for class 0x{class_hash.hex()}.  Keys: {keys} Data: {data}"
             )
 
         return DecodedEvent(

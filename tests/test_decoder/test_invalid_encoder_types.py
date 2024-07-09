@@ -1,15 +1,15 @@
 import pytest
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
     StarknetStruct,
 )
-from starknet_abi.decode import decode_from_types
-from starknet_abi.encode import encode_from_types
-from starknet_abi.exceptions import (
+from nethermind.starknet_abi.decode import decode_from_types
+from nethermind.starknet_abi.encode import encode_from_types
+from nethermind.starknet_abi.exceptions import (
     InvalidCalldataError,
     TypeDecodeError,
     TypeEncodeError,

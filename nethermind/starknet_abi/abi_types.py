@@ -61,8 +61,7 @@ class StarknetCoreType(Enum):
         parses a core::integer::<type_str> into a Starknet Core type
 
         .. doctest::
-
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> StarknetCoreType.int_from_string('u16')
             StarknetCoreType.U16
             >>> StarknetCoreType.int_from_string('u256')
@@ -92,7 +91,7 @@ class StarknetCoreType(Enum):
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> StarknetCoreType.U128.id_str()
             'U128'
             >>> StarknetCoreType.Bool.id_str()
@@ -113,7 +112,7 @@ class StarknetCoreType(Enum):
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType
             >>> StarknetCoreType.U256.max_value()
             115792089237316195423570985008687907853269984665640564039457584007913129639935
 
@@ -147,7 +146,7 @@ class StarknetArray:
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetArray, StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetArray, StarknetCoreType
             >>> felt_array = StarknetArray(StarknetCoreType.Felt)
             >>> felt_array.id_str()
             '[Felt]'
@@ -170,7 +169,7 @@ class StarknetOption:
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetOption, StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetOption, StarknetCoreType
             >>> uint_option = StarknetOption(StarknetCoreType.U128)
             >>> uint_option.id_str()
             'Option[U128]'
@@ -194,7 +193,7 @@ class StarknetEnum:
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetEnum, StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetEnum, StarknetCoreType
             >>> status_enum = StarknetEnum(
             ...     name="Status",
             ...     variants=[
@@ -241,8 +240,7 @@ class StarknetTuple:
         Returns the string representation of a tuple of types
 
         .. doctest::
-
-            >>> from starknet_abi.abi_types import StarknetTuple, StarknetCoreType
+            >>> from nethermind.starknet_abi.abi_types import StarknetTuple, StarknetCoreType
             >>> uint_tuple = StarknetTuple([StarknetCoreType.U32, StarknetCoreType.U32])
             >>> uint_tuple.id_str()
             '(U32,U32)'
@@ -271,8 +269,7 @@ class StarknetStruct:
         """
 
         .. doctest::
-
-            >>> from starknet_abi.abi_types import StarknetStruct, StarknetCoreType, StarknetArray, AbiParameter
+            >>> from nethermind.starknet_abi.abi_types import StarknetStruct, StarknetCoreType, StarknetArray, AbiParameter
             >>> struct_def = StarknetStruct(
             ...     name="PackageVersion",
             ...     members=[
@@ -315,7 +312,7 @@ class AbiParameter:
 
         .. doctest::
 
-            >>> from starknet_abi.abi_types import StarknetCoreType, AbiParameter
+            >>> from nethermind.starknet_abi.abi_types import StarknetCoreType, AbiParameter
             >>> from_param = AbiParameter('from', StarknetCoreType.ContractAddress)
             >>> from_param.id_str()
             'from:ContractAddress'

@@ -3,7 +3,7 @@ from collections import defaultdict
 from graphlib import TopologicalSorter
 from typing import Any
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiMemberType,
     AbiParameter,
     StarknetArray,
@@ -14,8 +14,8 @@ from starknet_abi.abi_types import (
     StarknetTuple,
     StarknetType,
 )
-from starknet_abi.decoding_types import AbiEvent, AbiFunction
-from starknet_abi.exceptions import InvalidAbiError
+from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction
+from nethermind.starknet_abi.exceptions import InvalidAbiError
 
 
 def group_abi_by_type(abi_json: list[dict]) -> defaultdict[AbiMemberType, list[dict]]:
@@ -221,14 +221,12 @@ def extract_inner_type(abi_type: str) -> str:
     Extracts the inner type from a type string
 
     .. doctest::
-
-        >>> from starknet_abi.parse import extract_inner_type
+        >>> from nethermind.starknet_abi.parse import extract_inner_type
         >>> extract_inner_type("core::array::Array::<core::integer::u256>")
         'core::integer::u256'
 
         >>> extract_inner_type("core::array::Array::<core::option::Option::<core::felt252>>")
         'core::option::Option::<core::felt252>'
-
     """
 
     return abi_type[abi_type.find("<") + 1 : abi_type.rfind(">")]
@@ -396,23 +394,41 @@ def parse_abi_event(
         else:
             return None
 
-    elif "inputs" in abi_event:  # Version 1 Abi
-        event_parameters = abi_event["inputs"]
+    elif "inputs" in abi_event:  # Version 0 Abi
+        # Inputs cannot be indexed and are treated as data
+        event_parameters = [{"kind": "data", **e} for e in abi_event["inputs"]]
 
-    elif "data" in abi_event:
-        event_parameters = abi_event["data"]
+    elif "data" in abi_event:  # Version 1 Abi
+        event_parameters = [{"kind": "key", **e} for e in abi_event["keys"]]
+        event_parameters.extend([{"kind": "data", **e} for e in abi_event["data"]])
     else:
         return None
 
-    parsed_data = parse_abi_parameters(
-        names=[abi_input["name"] for abi_input in event_parameters],
-        types=[abi_input["type"] for abi_input in event_parameters],
+    decoded_params = parse_abi_parameters(
+        types=[e["type"] for e in event_parameters],
+        names=[e["name"] for e in event_parameters],
         custom_types=custom_types,
     )
 
+    event_kinds = {
+        abi_input["name"]: abi_input["kind"] for abi_input in event_parameters
+    }
+    event_data = {
+        param.name: param.type
+        for param in decoded_params
+        if event_kinds[param.name] == "data"
+    }
+    event_keys = {
+        param.name: param.type
+        for param in decoded_params
+        if event_kinds[param.name] == "key"
+    }
+
     return AbiEvent(
         name=abi_event["name"],
-        data=parsed_data,
+        parameters=[param.name for param in decoded_params],
+        data=event_data,
+        keys=event_keys,
     )
 
 

@@ -1,14 +1,14 @@
 import json
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
     StarknetStruct,
 )
-from starknet_abi.core import StarknetAbi
-from starknet_abi.decoding_types import AbiEvent, AbiFunction
-from starknet_abi.parse import parse_abi_function
+from nethermind.starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction
+from nethermind.starknet_abi.parse import parse_abi_function
 from tests.abi import (
     NO_STRUCT_ABI_DEFINITION,
     NO_STRUCT_CLASS_HASH,
@@ -40,16 +40,40 @@ def test_function_signatures():
 def test_event_signatures():
     transfer = AbiEvent(
         name="Transfer",
-        data=[
-            AbiParameter("from", StarknetCoreType.ContractAddress),
-            AbiParameter("to", StarknetCoreType.ContractAddress),
-            AbiParameter("amount", StarknetCoreType.U256),
-        ],
+        parameters=["from", "to", "amount"],
+        data={
+            "from": StarknetCoreType.ContractAddress,
+            "to": StarknetCoreType.ContractAddress,
+            "amount": StarknetCoreType.U256,
+        },
     )
 
     assert (
         transfer.id_str()
         == "Event(from:ContractAddress,to:ContractAddress,amount:U256)"
+    )
+    assert (
+        transfer.signature.hex()
+        == "0099cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"
+    )
+
+
+def test_key_event_signature():
+    transfer = AbiEvent(
+        name="Transfer",
+        parameters=["from", "to", "amount"],
+        keys={
+            "from": StarknetCoreType.ContractAddress,
+            "to": StarknetCoreType.ContractAddress,
+        },
+        data={
+            "amount": StarknetCoreType.U256,
+        },
+    )
+
+    assert (
+        transfer.id_str()
+        == "Event(<from>:ContractAddress,<to>:ContractAddress,amount:U256)"
     )
     assert (
         transfer.signature.hex()
@@ -92,7 +116,7 @@ def test_load_wildcard_array_syntax():
     parsed_event = decoder.events["log_storage_cells"]
 
     assert len(parsed_event.data) == 1
-    assert parsed_event.data[0].type == StarknetArray(
+    assert parsed_event.data["storage_cells"] == StarknetArray(
         StarknetStruct(
             name="StorageCell",
             members=[
@@ -145,3 +169,27 @@ def test_felt_types():
         "felt_types",
         bytes.fromhex(VERSION_0_CLASS_HASH[2:]),
     )
+
+
+def test_parse_event_keys():
+    abi_json = load_abi("erc20_key_events", 2)
+
+    parsed_abi = StarknetAbi.from_json(
+        abi_json,
+        "erc20_key_events",
+        bytes.fromhex(
+            "0261ad90e1901833f794ee3d69816846f68ddb4fb7bb9ffec2d8f0c8608e298d"
+        ),
+    )
+
+    approve_event = parsed_abi.events[
+        "openzeppelin::token::erc20::erc20::ERC20Component::Approval"
+    ]
+
+    assert approve_event.parameters == ["owner", "spender", "value"]
+    assert approve_event.keys == {
+        "owner": StarknetCoreType.ContractAddress,
+        "spender": StarknetCoreType.ContractAddress,
+    }
+
+    assert approve_event.data == {"value": StarknetCoreType.U256}

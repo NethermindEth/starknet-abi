@@ -1,6 +1,6 @@
 from graphlib import TopologicalSorter
 
-from starknet_abi.abi_types import (
+from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetArray,
     StarknetCoreType,
@@ -9,7 +9,7 @@ from starknet_abi.abi_types import (
     StarknetStruct,
     StarknetTuple,
 )
-from starknet_abi.parse import (
+from nethermind.starknet_abi.parse import (
     _build_type_graph,
     _parse_struct,
     _parse_tuple,
