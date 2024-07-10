@@ -125,6 +125,7 @@ def test_load_wildcard_array_syntax():
             ],
         )
     )
+    assert parsed_event.name == "log_storage_cells"
 
 
 def test_wildcard_size_syntax():
@@ -182,9 +183,7 @@ def test_parse_event_keys():
         ),
     )
 
-    approve_event = parsed_abi.events[
-        "openzeppelin::token::erc20::erc20::ERC20Component::Approval"
-    ]
+    approve_event = parsed_abi.events["Approval"]
 
     assert approve_event.parameters == ["owner", "spender", "value"]
     assert approve_event.keys == {
@@ -193,3 +192,4 @@ def test_parse_event_keys():
     }
 
     assert approve_event.data == {"value": StarknetCoreType.U256}
+    assert approve_event.name == "Approval"

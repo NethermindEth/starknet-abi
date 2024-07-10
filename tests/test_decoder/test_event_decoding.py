@@ -24,9 +24,7 @@ def test_decode_event():
         ),
     )
 
-    abi_event = parsed_abi.events[
-        "openzeppelin::token::erc20::erc20::ERC20Component::Approval"
-    ]
+    abi_event = parsed_abi.events["Approval"]
     decoded_event = abi_event.decode(event_data, event_keys)
 
     assert decoded_event.data == {

@@ -425,7 +425,7 @@ def parse_abi_event(
     }
 
     return AbiEvent(
-        name=abi_event["name"],
+        name=abi_event["name"].split("::")[-1],
         parameters=[param.name for param in decoded_params],
         data=event_data,
         keys=event_keys,
