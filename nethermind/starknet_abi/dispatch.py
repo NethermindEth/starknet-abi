@@ -220,7 +220,7 @@ class DecodingDispatcher:
 
         return DecodedFunction(
             abi_name=abi_name,
-            func_name=function_name,
+            name=function_name,
             inputs=decoded_inputs,
             outputs=decoded_outputs,
         )

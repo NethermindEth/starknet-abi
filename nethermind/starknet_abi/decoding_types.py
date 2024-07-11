@@ -15,7 +15,7 @@ class DecodedFunction:
     """
 
     abi_name: str | None
-    func_name: str
+    name: str
 
     inputs: dict[str, Any]
     outputs: list[Any] | None
@@ -101,7 +101,7 @@ class AbiFunction:
             ...    outputs=[StarknetCoreType.U64]
             ... )
             >>> add_function.decode([123456, 654321], [777777])
-            DecodedFunction(abi_name=None, func_name='add', inputs={'a': 123456, 'b': 654321}, outputs=[777777])
+            DecodedFunction(abi_name=None, name='add', inputs={'a': 123456, 'b': 654321}, outputs=[777777])
 
         :param calldata:
         :param result:
@@ -117,7 +117,7 @@ class AbiFunction:
 
         return DecodedFunction(
             abi_name=self.abi_name,
-            func_name=self.name,
+            name=self.name,
             inputs=decoded_inputs,
             outputs=decoded_outputs,
         )
