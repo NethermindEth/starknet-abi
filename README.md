@@ -2,10 +2,36 @@
 
 Starknet ABI is a Python library for encoding and decoding Starknet contract calls and events. It is built for efficient and rapid indexing of Starknet transactions, offering simplicity and speed.
 
+[//]: # (## Documentation)
+
+[//]: # ([Starknet-ABI Docs]&#40;https://nethermindEth.github.io/starknet-abi&#41;.)
+
+
+## Features
+
+- **Encode and Decode**: Easily encode and decode Starknet contract calls and events.
+- **Comprehensive Parsing**: Parse all versions of Cairo ABI JSON into a shared data structure.
+- **Type Identification**: Identify type strings for each function, enabling the detection of ABIs with identical types.
+- **ABI Decoding Dispatcher**:
+  - Efficiently load thousands of indexed ABIs into memory.
+  - Pickle and reuse the decoding dispatcher data structure in data pipelines.
+
+## Contributing
+
+We value community contributions and are eager to support your involvement. If you encounter any bugs or have suggestions for new features, please [open an issue](https://github.com/NethermindEth/starknet-abi/issues/new) or submit a [pull request](https://github.com/NethermindEth/starknet-abi/pulls).
+
 ## Installation
+Once the library is stable, builds will be published to PyPi. In the meantime, you can install as git+ package
 
-Once the library is stable, builds will be published to PyPi. In the meantime, you can follow the development installation instructions:
+```bash
+# pip install
+pip install git+https://github.com/NethermindEth/starknet-abi.git
 
+# add as Poetry dependency
+poetry add git+https://github.com/NethermindEth/starknet-abi.git
+```
+
+## Development Installation
 ```bash
 git clone https://github.com/nethermindEth/starknet-abi
 cd starknet-abi
@@ -22,7 +48,7 @@ poetry install --all-extras
 
 ```python
 import json
-from starknet_abi.core import StarknetAbi
+from nethermind.starknet_abi.core import StarknetAbi
 
 with open("abi.json") as f:
     raw_abi = json.load(f)
@@ -42,7 +68,7 @@ print(starknet_eth_abi.implemented_interfaces)
 1. Decode core types:
 
 ```python
->>> from starknet_abi.decode import decode_core_type, StarknetCoreType
+>>> from nethermind.starknet_abi.decode import decode_core_type, StarknetCoreType
 >>> decode_core_type(StarknetCoreType.Bool, [0])
 False
 >>> decode_core_type(StarknetCoreType.U256, [12345, 0])
@@ -54,7 +80,7 @@ False
 2. Decode from parameters:
 
 ```python
->>> from starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
+>>> from nethermind.starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
 >>> decode_from_params(
         [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
         [123456, 654321]
@@ -65,7 +91,7 @@ False
 3. Decode from types:
 
 ```python
->>> from starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
+>>> from nethermind.starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
 >>> decode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [3, 123, 244, 210, 0])
 [[123, 244, 210], False]
 >>> decode_from_types(
@@ -80,7 +106,7 @@ False
 1. Encode core types:
 
 ```python
->>> from starknet_abi.encode import encode_core_type, StarknetCoreType
+>>> from nethermind.starknet_abi.encode import encode_core_type, StarknetCoreType
 >>> encode_core_type(StarknetCoreType.Bool, False)
 [0]
 >>> encode_core_type(StarknetCoreType.U256, 12345)
@@ -92,7 +118,7 @@ False
 2. Encode from parameters:
 
 ```python
->>> from starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
+>>> from nethermind.starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
 >>> encode_from_params(
         [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
         {"a": 123456, "b": 654321}
@@ -103,7 +129,7 @@ False
 3. Encode from types:
 
 ```python
->>> from starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
+>>> from nethermind.starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
 >>> encode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [[123, 244, 210], False])
 [3, 123, 244, 210, 0]
 >>> encode_from_types(
@@ -112,21 +138,6 @@ False
     )
 [2087021424722619777119509474943472645767659996348769578120564519014510906823, 250000, 0, 1]
 ```
-
-For detailed usage and API documentation, visit the [Starknet-ABI Docs](https://nethermindEth.github.io/starknet-abi).
-
-## Features
-
-- **Encode and Decode**: Easily encode and decode Starknet contract calls and events.
-- **Comprehensive Parsing**: Parse all versions of Cairo ABI JSON into a shared data structure.
-- **Type Identification**: Identify type strings for each function, enabling the detection of ABIs with identical types.
-- **ABI Decoding Dispatcher**:
-  - Efficiently load thousands of indexed ABIs into memory.
-  - Pickle and reuse the decoding dispatcher data structure in data pipelines.
-
-## Contributing
-
-We value community contributions and are eager to support your involvement. If you encounter any bugs or have suggestions for new features, please [open an issue](https://github.com/NethermindEth/starknet-abi/issues/new) or submit a [pull request](https://github.com/NethermindEth/starknet-abi/pulls).
 
 ## License
 
