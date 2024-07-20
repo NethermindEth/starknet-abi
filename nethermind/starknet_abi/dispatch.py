@@ -2,7 +2,7 @@ import hashlib
 from dataclasses import dataclass
 from typing import Sequence
 
-from nethermind.starknet_abi.abi_types import AbiParameter, StarknetType
+from nethermind.starknet_abi.abi_types import AbiParameter, StarknetArray, StarknetType
 from nethermind.starknet_abi.core import StarknetAbi
 from nethermind.starknet_abi.decode import decode_from_params, decode_from_types
 from nethermind.starknet_abi.decoding_types import DecodedEvent, DecodedFunction
@@ -204,19 +204,33 @@ class DecodingDispatcher:
         )
 
         # Copy Arrays that can be consumed by decoder
-        _calldata, _result = calldata.copy(), result.copy()
+        _calldata = calldata.copy()
         decoded_inputs = decode_from_params(input_types, _calldata)
-        decoded_outputs = decode_from_types(output_types, _result)
 
         if len(_calldata) > 0:
             raise InvalidCalldataError(
                 f"Calldata Remaining after decoding function input {calldata} from {input_types}"
             )
 
-        if len(_result) > 0:
-            raise InvalidCalldataError(
-                f"Calldata Remaining after decoding function result {result} from {output_types}"
-            )
+        _result = result.copy()
+        decoded_outputs = decode_from_types(output_types, _result)
+
+        # Some early results of single type do not have a length prefix, try legacy before failing
+        if len(_result) > 0 and isinstance(output_types[0], StarknetArray):
+
+            _retry, decoded_outputs = result.copy(), [[]]
+            while len(_retry):
+                try:
+                    decoded_outputs[0].append(
+                        decode_from_types([output_types[0].inner_type], _retry)[0]
+                    )
+                except TypeDecodeError:
+                    raise InvalidCalldataError(  # pylint: disable=raise-missing-from
+                        f"Calldata Remaining after decoding function result {result} from {output_types}"
+                    )
+
+        if len(decoded_outputs) == 1 and isinstance(output_types[0], StarknetArray):
+            decoded_outputs = decoded_outputs[0]
 
         return DecodedFunction(
             abi_name=abi_name,
