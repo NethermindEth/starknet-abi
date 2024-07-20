@@ -31,7 +31,7 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
         >>> decode_core_type(StarknetCoreType.U256, [12345, 0])
         12345
         >>> decode_core_type(StarknetCoreType.Felt, [256])
-        '0x0000000000000000000000000000000000000000000000000000000000000100'
+        '0x0100'
 
     :param decode_type:  Starknet Core Type to Decode
     :param calldata:  Mutable reference to calldata array. **WARN -- Array is Consumed by Method**
@@ -66,17 +66,19 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
                 assert bool_val in (0, 1), "Bool Value must be 0 or 1"
                 return bool_val == 1
 
-            case (
-                StarknetCoreType.Felt
-                | StarknetCoreType.ClassHash
-                | StarknetCoreType.ContractAddress
-                | StarknetCoreType.StorageAddress
-            ):
+            case StarknetCoreType.Felt:
+                encoded_int = calldata.pop(0)
+
+                assert 0 <= encoded_int <= decode_type.max_value(), f"{encoded_int} larger than Felt"
+                hexstr = f"{encoded_int:0x}"
+                return f"0x0{hexstr}" if len(hexstr) % 2 else f"0x{hexstr}"
+
+            case StarknetCoreType.ClassHash | StarknetCoreType.ContractAddress | StarknetCoreType.StorageAddress:
                 encoded_int = calldata.pop(0)
 
                 assert (
                     0 <= encoded_int <= decode_type.max_value()
-                ), f"{encoded_int} larger than Felt"
+                ), f"{encoded_int} larger than Felt Address"
                 return f"0x{encoded_int:064x}"
 
             case StarknetCoreType.EthAddress:

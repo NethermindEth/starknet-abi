@@ -131,7 +131,7 @@ def test_literal_enum(calldata, decoded):
         (
             StarknetCoreType.Felt,
             [0x0123456789ABCDEF],
-            "0x0000000000000000000000000000000000000000000000000123456789abcdef",
+            "0x0123456789abcdef",
         ),
         (
             StarknetCoreType.ContractAddress,
