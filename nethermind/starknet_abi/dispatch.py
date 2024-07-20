@@ -189,7 +189,7 @@ class DecodingDispatcher:
         :param class_hash:  class hash of the trace or transaction
         """
 
-        class_dispatcher = self.class_ids.get(class_hash[-8:])
+        class_dispatcher = self.get_class(class_hash)
         if class_dispatcher is None:
             return None
 
@@ -240,7 +240,7 @@ class DecodingDispatcher:
         :param keys:
         :param class_hash:
         """
-        class_dispatcher = self.class_ids.get(class_hash[-8:])
+        class_dispatcher = self.get_class(class_hash)
         if class_dispatcher is None:
             return None
 
