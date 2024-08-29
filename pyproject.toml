@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "starknet-abi"
-version = "0.1.0"
+version = "1.0.0"
 description = "Performant Starkent ABI Decoding Library designed for Data Indexing"
 authors = ["Eli Barbieri <eli@nethermind.io>"]
 license = "MIT"

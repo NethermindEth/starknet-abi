@@ -40,7 +40,7 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           poetry config virtualenvs.in-project true
-          poetry install --no-interaction --all-extras
+          poetry install --no-interaction --with dev --with docs
 
   lint:
     runs-on: ubuntu-latest
