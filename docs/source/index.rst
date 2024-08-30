@@ -1,10 +1,10 @@
-Welcome to the Starknet ABI Documentation!
-==========================================
+Starknet ABI Documentation
+==========================
 
 The Starknet ABI library provides utilities for encoding and decoding Starknet contract calls and events.
 
 .. note::
-    This library is currently in beta and is under development. If you encounter any bugs or have suggestions for new features, please `open an issue <https://github.com/NethermindEth/starknet-abi/issues/new>`_ or submit a `pull request <https://github.com/NethermindEth/starknet-abi/pulls>`_  on our GitHub repository.
+    This library is currently an early release.  If you encounter any bugs or have suggestions for new features, please `open an issue <https://github.com/NethermindEth/starknet-abi/issues/new>`_ or submit a `pull request <https://github.com/NethermindEth/starknet-abi/pulls>`_  on our GitHub repository.
 
 Get Started
 -----------

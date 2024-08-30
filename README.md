@@ -2,9 +2,8 @@
 
 Starknet ABI is a Python library for encoding and decoding Starknet contract calls and events. It is built for efficient and rapid indexing of Starknet transactions, offering simplicity and speed.
 
-[//]: # (## Documentation)
-
-[//]: # ([Starknet-ABI Docs]&#40;https://nethermindEth.github.io/starknet-abi&#41;.)
+## Documentation
+### [Starknet-ABI Docs](https://nethermindeth.github.io/starknet-abi)
 
 
 ## Features

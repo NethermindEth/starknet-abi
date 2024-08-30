@@ -14,7 +14,7 @@ Parse Starknet ABI JSON
 .. code-block:: python
 
     import json
-    from starknet_abi.core import StarknetAbi
+    from nethermind.starknet_abi.core import StarknetAbi
 
     with open("abi.json") as f:
         raw_abi = json.load(f)
@@ -35,7 +35,7 @@ Decode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.decode import decode_core_type, StarknetCoreType
+    >>> from nethermind.starknet_abi.decode import decode_core_type, StarknetCoreType
     >>> decode_core_type(StarknetCoreType.Bool, [0])
     False
     >>> decode_core_type(StarknetCoreType.U256, [12345, 0])
@@ -47,7 +47,7 @@ Decode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
+    >>> from nethermind.starknet_abi.decode import decode_from_params, StarknetCoreType, AbiParameter
     >>> decode_from_params(
     ...     [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
     ...     [123456, 654321]
@@ -58,7 +58,7 @@ Decode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
+    >>> from nethermind.starknet_abi.decode import decode_from_types, StarknetCoreType, StarknetArray
     >>> decode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [3, 123, 244, 210, 0])
     [[123, 244, 210], False]
     >>> decode_from_types(
@@ -74,7 +74,7 @@ Encode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.encode import encode_core_type, StarknetCoreType
+    >>> from nethermind.starknet_abi.encode import encode_core_type, StarknetCoreType
     >>> encode_core_type(StarknetCoreType.Bool, False)
     [0]
     >>> encode_core_type(StarknetCoreType.U256, 12345)
@@ -86,7 +86,7 @@ Encode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
+    >>> from nethermind.starknet_abi.encode import encode_from_params, StarknetCoreType, AbiParameter
     >>> encode_from_params(
     ...     [AbiParameter("a", StarknetCoreType.U32), AbiParameter("b", StarknetCoreType.U32)],
     ...     {"a": 123456, "b": 654321}
@@ -97,7 +97,7 @@ Encode transaction calldata
 
 .. code-block:: python
 
-    >>> from starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
+    >>> from nethermind.starknet_abi.encode import encode_from_types, StarknetCoreType, StarknetArray
     >>> encode_from_types([StarknetArray(StarknetCoreType.U8), StarknetCoreType.Bool], [[123, 244, 210], False])
     [3, 123, 244, 210, 0]
     >>> encode_from_types(

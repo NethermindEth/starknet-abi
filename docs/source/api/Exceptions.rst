@@ -1,6 +1,6 @@
 Exceptions
 ==========
 
-.. automodule:: starknet_abi.exceptions
+.. automodule:: nethermind.starknet_abi.exceptions
     :members:
     :exclude-members: __init__
