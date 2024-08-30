@@ -53,6 +53,13 @@ for PY_VERSION in '310' '311' '312'; do
     --append benchmarks/$PY_VERSION-stark-py.json \
     "func()"
 
+  echo "Running Benchmark for starknet-py ---- Complex Decode"
+  $PY -m pyperf timeit \
+    --name complex-decode \
+    --setup "from benchmarks.starknet_py import bench_complex_decode; func = bench_complex_decode()" \
+    --append benchmarks/$PY_VERSION-stark-py.json \
+    "func()"
+
   echo "Running Benchmark for starknet-abi ---- Setup"
   $PY -m pyperf timeit \
     --name setup \
@@ -66,23 +73,17 @@ for PY_VERSION in '310' '311' '312'; do
     --setup "from benchmarks.starknet_abi_base import bench_simple_decode; func = bench_simple_decode()" \
     --append benchmarks/$PY_VERSION-stark-abi.json \
     "func()"
+
+  echo "Running Benchmark for starknet-abi ---- Complex Decode"
+  $PY -m pyperf timeit \
+    --name complex-decode \
+    --setup "from benchmarks.starknet_abi_base import bench_complex_decode; func = bench_complex_decode()" \
+    --append benchmarks/$PY_VERSION-stark-abi.json \
+    "func()"
 done
 
+echo "# Benchmark Results" > benchmarks/results.md
 
-setup_bench_files=()
-simple_decode_bench_files=()
-# Iterate over combinations of numbers and file extensions
-for ext in py abi; do
-    for num in 310 311 312; do
-        # Generate filenames and append them to the array
-        setup_bench_files+=("benchmarks/${num}-stark-${ext}-setup.json")
-        simple_decode_bench_files+=("benchmarks/${num}-stark-${ext}-simple-decode.json")
-    done
-done
-
-echo "# Starknet-abi Benchmarks" > benchmarks/compare.md
-
-echo "## Setup Benchmarks" >> benchmarks/compare.md
-pyperf compare_to "${setup_bench_files[@]}" --table --table-format=md >> benchmarks/compare.md
-echo "## Simple Decode Benchmarks" >> benchmarks/compare.md
-pyperf compare_to "${simple_decode_bench_files[@]}" --table --table-format=md >> benchmarks/compare.md
+pyperf compare_to benchmarks/310-stark-py.json benchmarks/311-stark-py.json benchmarks/312-stark-py.json \
+                  benchmarks/310-stark-abi.json benchmarks/311-stark-abi.json benchmarks/312-stark-abi.json \
+                  --table --table-format=md >> benchmarks/results.md

@@ -3,9 +3,11 @@ import json
 from nethermind.starknet_abi.core import StarknetAbi
 from nethermind.starknet_abi.decode import decode_from_params
 
-from .abi import STARKNET_ETH_ABI_JSON
+from .abi import STARKNET_ETH_ABI_JSON, AVNU_ABI_JSON
+from .calldata import multi_route_swap_calldata
 
 starknet_eth_abi = json.loads(STARKNET_ETH_ABI_JSON)
+avnu_abi = json.loads(AVNU_ABI_JSON)
 
 
 def bench_setup():
@@ -34,7 +36,7 @@ def bench_simple_decode():
         0x0,
     ]
 
-    parsed_abi = StarknetAbi.from_json(starknet_eth_abi, "starknet_eth")
+    parsed_abi = StarknetAbi.from_json(starknet_eth_abi, "starknet_eth", b"")
 
     transfer_func = parsed_abi.functions["transfer"].inputs
 
@@ -43,3 +45,17 @@ def bench_simple_decode():
         decoded = decode_from_params(transfer_func, calldata_copy)
 
     return _run_bench
+
+
+# https://voyager.online/tx/0x4335f58410d8e66309e67d25c12bc61b5bc4b4d1ada61ff1eb2f3a0cabbb3d2
+def bench_complex_decode():
+    parsed_abi = StarknetAbi.from_json(avnu_abi, "AVNU", b"")
+
+    multi_route_swap = parsed_abi.functions["multi_route_swap"].inputs
+
+    def _run_bench():
+        calldata_copy = multi_route_swap_calldata.copy()
+        decoded = decode_from_params(multi_route_swap, calldata_copy)
+
+    return _run_bench
+

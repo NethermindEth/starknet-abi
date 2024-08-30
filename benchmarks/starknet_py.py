@@ -3,9 +3,11 @@ import json
 from starknet_py.abi.v2.parser import AbiParser as AbiParserV2
 from starknet_py.serialization.factory import serializer_for_payload
 
-from .abi import STARKNET_ETH_ABI_JSON
+from .abi import STARKNET_ETH_ABI_JSON, AVNU_ABI_JSON
+from .calldata import multi_route_swap_calldata
 
 starknet_eth_abi = json.loads(STARKNET_ETH_ABI_JSON)
+avnu_abi = json.loads(AVNU_ABI_JSON)
 
 
 def bench_setup():
@@ -44,5 +46,18 @@ def bench_simple_decode():
 
     def _run_bench():
         deserialized = transfer_input_serializer.deserialize(transfer_calldata)
+
+    return _run_bench
+
+
+def bench_complex_decode():
+
+    parsed_abi = AbiParserV2(avnu_abi).parse()
+
+    multi_route_swap_func = parsed_abi.interfaces["avnu::exchange::IExchange"].items["multi_route_swap"]
+    multi_route_swap_input_serializer = serializer_for_payload(multi_route_swap_func.inputs)
+
+    def _run_bench():
+        deserialized = multi_route_swap_input_serializer.deserialize(multi_route_swap_calldata)
 
     return _run_bench

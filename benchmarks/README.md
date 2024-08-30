@@ -18,5 +18,5 @@ To run the benchmarks, you need to setup the following venvs:
 │   ...
 ```
 
-From this point the 
+From this point, run the run_benchmarks.sh script
 

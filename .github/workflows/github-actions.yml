@@ -109,7 +109,7 @@ jobs:
         run: poetry run pytest -v tests/
 
       - name: Run Doctests
-        run: poetry run pytest --doctest-modules starknet_abi/
+        run: poetry run pytest --doctest-modules nethermind/starknet_abi/
 
   validate-docs:
     runs-on: ubuntu-latest
