@@ -3,7 +3,7 @@ import json
 from nethermind.starknet_abi.core import StarknetAbi
 from nethermind.starknet_abi.decode import decode_from_params
 
-from .abi import STARKNET_ETH_ABI_JSON, AVNU_ABI_JSON
+from .abi import AVNU_ABI_JSON, STARKNET_ETH_ABI_JSON
 from .calldata import multi_route_swap_calldata
 
 starknet_eth_abi = json.loads(STARKNET_ETH_ABI_JSON)
@@ -58,4 +58,3 @@ def bench_complex_decode():
         decoded = decode_from_params(multi_route_swap, calldata_copy)
 
     return _run_bench
-
