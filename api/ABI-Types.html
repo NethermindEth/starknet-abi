@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>ABI Types &#8212; Starknet ABI Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ABI-Types';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Core" href="Core.html" />
+    <link rel="prev" title="Releases" href="../releases.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+   
+
+<a class="navbar-brand logo" href="https://nethermind.io">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo-light.svg" class="logo__image only-light" alt="Starknet ABI Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo-dark.svg" class="logo__image only-dark" alt="Starknet ABI Documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Starknet ABI Documentation
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">ABI Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Encode.html">Encode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parse.html">Parse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Starknet-Types.html">Starknet Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">API Glossary</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/nethermindEth/starknet-abi" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ABI Types</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.abi_types.AbiParameter"><code class="docutils literal notranslate"><span class="pre">AbiParameter</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.abi_types.AbiParameter.id_str"><code class="docutils literal notranslate"><span class="pre">AbiParameter.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction"><code class="docutils literal notranslate"><span class="pre">AbiFunction</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.decode"><code class="docutils literal notranslate"><span class="pre">AbiFunction.decode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.encode"><code class="docutils literal notranslate"><span class="pre">AbiFunction.encode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.id_str"><code class="docutils literal notranslate"><span class="pre">AbiFunction.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent"><code class="docutils literal notranslate"><span class="pre">AbiEvent</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent.decode"><code class="docutils literal notranslate"><span class="pre">AbiEvent.decode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent.id_str"><code class="docutils literal notranslate"><span class="pre">AbiEvent.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiInterface"><code class="docutils literal notranslate"><span class="pre">AbiInterface</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.DecodedFunction"><code class="docutils literal notranslate"><span class="pre">DecodedFunction</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.DecodedEvent"><code class="docutils literal notranslate"><span class="pre">DecodedEvent</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="abi-types">
+<h1>ABI Types<a class="headerlink" href="#abi-types" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.abi_types.AbiParameter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.abi_types.</span></span><span class="sig-name descname"><span class="pre">AbiParameter</span></span><a class="headerlink" href="#nethermind.starknet_abi.abi_types.AbiParameter" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass Representing an ABI Parameter.  Includes a parameter name and the StarknetType of the parameter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.abi_types.AbiParameter.id_str">
+<span class="sig-name descname"><span class="pre">id_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nethermind.starknet_abi.abi_types.AbiParameter.id_str" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a string representation of the ABI Parameter.  Represents the name, followed by a colon, then a type</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.abi_types</span> <span class="kn">import</span> <span class="n">StarknetCoreType</span><span class="p">,</span> <span class="n">AbiParameter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_param</span> <span class="o">=</span> <span class="n">AbiParameter</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">,</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">ContractAddress</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_param</span><span class="o">.</span><span class="n">id_str</span><span class="p">()</span>
+<span class="go">&#39;from:ContractAddress&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.decoding_types.</span></span><span class="sig-name descname"><span class="pre">AbiFunction</span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiFunction" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass Representing an ABI Function.  Includes a function name, the function signature, and the input
+and output parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiFunction.decode">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nethermind.starknet_abi.decoding_types.DecodedFunction" title="nethermind.starknet_abi.decoding_types.DecodedFunction"><span class="pre">DecodedFunction</span></a></span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiFunction.decode" title="Permalink to this definition">#</a></dt>
+<dd><p>Decode the calldata and result of a function.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.decoding_types</span> <span class="kn">import</span> <span class="n">AbiFunction</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.abi_types</span> <span class="kn">import</span> <span class="n">StarknetCoreType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span> <span class="o">=</span> <span class="n">AbiFunction</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">AbiParameter</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U32</span><span class="p">),</span> <span class="n">AbiParameter</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U32</span><span class="p">)],</span>
+<span class="gp">... </span>   <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U64</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="mi">123456</span><span class="p">,</span> <span class="mi">654321</span><span class="p">],</span> <span class="p">[</span><span class="mi">777777</span><span class="p">])</span>
+<span class="go">DecodedFunction(abi_name=None, name=&#39;add&#39;, inputs={&#39;a&#39;: 123456, &#39;b&#39;: 654321}, outputs=[777777])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calldata</strong> – </p></li>
+<li><p><strong>result</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiFunction.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiFunction.encode" title="Permalink to this definition">#</a></dt>
+<dd><p>Encode the inputs of a function into calldata.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.decoding_types</span> <span class="kn">import</span> <span class="n">AbiFunction</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.abi_types</span> <span class="kn">import</span> <span class="n">StarknetCoreType</span><span class="p">,</span> <span class="n">StarknetArray</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span> <span class="o">=</span> <span class="n">AbiFunction</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">AbiParameter</span><span class="p">(</span><span class="s2">&quot;add_vals&quot;</span><span class="p">,</span> <span class="n">StarknetArray</span><span class="p">(</span><span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U8</span><span class="p">))],</span>
+<span class="gp">... </span>   <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U128</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s2">&quot;add_vals&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">122</span><span class="p">,</span> <span class="mi">212</span><span class="p">,</span> <span class="mi">221</span><span class="p">]})</span>
+<span class="go">[3, 122, 212, 221]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> – dict[function-param: value]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>calldata array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiFunction.id_str">
+<span class="sig-name descname"><span class="pre">id_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiFunction.id_str" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a string representation of the ABI Function Types.  Functions with identical types &amp; parameter names
+will have an identical id_str()</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.decoding_types</span> <span class="kn">import</span> <span class="n">AbiFunction</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.abi_types</span> <span class="kn">import</span> <span class="n">StarknetCoreType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span> <span class="o">=</span> <span class="n">AbiFunction</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">AbiParameter</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U32</span><span class="p">),</span> <span class="n">AbiParameter</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U32</span><span class="p">)],</span>
+<span class="gp">... </span>   <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">U64</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_function</span><span class="o">.</span><span class="n">id_str</span><span class="p">()</span>
+<span class="go">&#39;Function(a:U32,b:U32) -&gt; (U64)&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function(&lt;parameters&gt;) -&gt; (&lt;output-types&gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.decoding_types.</span></span><span class="sig-name descname"><span class="pre">AbiEvent</span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiEvent" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass representing an ABI Event.  Includes an event name, the event signature, and the data parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiEvent.decode">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nethermind.starknet_abi.decoding_types.DecodedEvent" title="nethermind.starknet_abi.decoding_types.DecodedEvent"><span class="pre">DecodedEvent</span></a></span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiEvent.decode" title="Permalink to this definition">#</a></dt>
+<dd><p>Decode the keys and data of an event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data array for decoding</p></li>
+<li><p><strong>keys</strong> – Optional data array of event keys</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DecodedEvent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiEvent.id_str">
+<span class="sig-name descname"><span class="pre">id_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiEvent.id_str" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a string representation of the ABI Function.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.decoding_types</span> <span class="kn">import</span> <span class="n">AbiEvent</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nethermind.starknet_abi.abi_types</span> <span class="kn">import</span> <span class="n">StarknetCoreType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_event</span> <span class="o">=</span> <span class="n">AbiEvent</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Create&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="n">StarknetCoreType</span><span class="o">.</span><span class="n">ContractAddress</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_event</span><span class="o">.</span><span class="n">id_str</span><span class="p">()</span>
+<span class="go">&#39;Event(address:ContractAddress)&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Event(&lt;data keys&gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.AbiInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.decoding_types.</span></span><span class="sig-name descname"><span class="pre">AbiInterface</span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.AbiInterface" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass Representing an ABI Interface.  Includes a name and a list of functions.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.DecodedFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.decoding_types.</span></span><span class="sig-name descname"><span class="pre">DecodedFunction</span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.DecodedFunction" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass representing the result of decoding an ABI</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nethermind.starknet_abi.decoding_types.DecodedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nethermind.starknet_abi.decoding_types.</span></span><span class="sig-name descname"><span class="pre">DecodedEvent</span></span><a class="headerlink" href="#nethermind.starknet_abi.decoding_types.DecodedEvent" title="Permalink to this definition">#</a></dt>
+<dd><p>Dataclass representing the result of decoding an ABI Event</p>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../releases.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Releases</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Core.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Core</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.abi_types.AbiParameter"><code class="docutils literal notranslate"><span class="pre">AbiParameter</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.abi_types.AbiParameter.id_str"><code class="docutils literal notranslate"><span class="pre">AbiParameter.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction"><code class="docutils literal notranslate"><span class="pre">AbiFunction</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.decode"><code class="docutils literal notranslate"><span class="pre">AbiFunction.decode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.encode"><code class="docutils literal notranslate"><span class="pre">AbiFunction.encode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiFunction.id_str"><code class="docutils literal notranslate"><span class="pre">AbiFunction.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent"><code class="docutils literal notranslate"><span class="pre">AbiEvent</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent.decode"><code class="docutils literal notranslate"><span class="pre">AbiEvent.decode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiEvent.id_str"><code class="docutils literal notranslate"><span class="pre">AbiEvent.id_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.AbiInterface"><code class="docutils literal notranslate"><span class="pre">AbiInterface</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.DecodedFunction"><code class="docutils literal notranslate"><span class="pre">DecodedFunction</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nethermind.starknet_abi.decoding_types.DecodedEvent"><code class="docutils literal notranslate"><span class="pre">DecodedEvent</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Nethermind
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Nethermind.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
