@@ -5,6 +5,7 @@ import pytest
 from nethermind.starknet_abi.abi_types import (
     AbiParameter,
     StarknetCoreType,
+    StarknetNonZero,
     StarknetStruct,
     StarknetTuple,
 )
@@ -27,6 +28,16 @@ def test_parse_v2_abis_to_starknet_abi(abi_name, abi_json):
 
     if abi_name == "starknet_eth":
         assert "transfer" in decoder.functions
+
+    if abi_name == "argent_account_v3":
+        func = decoder.functions["change_guardian_backup"]
+        assert func.inputs[0].type.inner_type.variants[0] == (
+            "Starknet",
+            StarknetStruct(
+                "argent::signer::signer_signature::StarknetSigner",
+                [AbiParameter("pubkey", StarknetNonZero(StarknetCoreType.Felt))],
+            ),
+        )
 
 
 def test_named_tuple_parsing():

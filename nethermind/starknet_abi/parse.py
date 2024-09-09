@@ -9,6 +9,7 @@ from nethermind.starknet_abi.abi_types import (
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
+    StarknetNonZero,
     StarknetOption,
     StarknetStruct,
     StarknetTuple,
@@ -55,7 +56,7 @@ def _build_type_graph(type_defs: list[dict]) -> dict[str, set[str]]:
     output_graph = {}
 
     for type_def in type_defs:
-        referenced_types = [
+        referenced_types: list[str] = [
             member["type"]
             for member in (
                 type_def["members"]
@@ -64,9 +65,20 @@ def _build_type_graph(type_defs: list[dict]) -> dict[str, set[str]]:
             )
         ]
 
-        output_graph.update(
-            {type_def["name"]: set(referenced_types) - STARKNET_CORE_TYPES}
-        )
+        ref_types = set()
+        for type_str in referenced_types:
+            if type_str in STARKNET_CORE_TYPES:
+                continue
+
+            if (
+                type_str.startswith(("core::array", "@core::array"))
+                and extract_inner_type(type_str) in STARKNET_CORE_TYPES
+            ):
+                continue
+
+            ref_types.add(type_str)
+
+        output_graph.update({type_def["name"]: ref_types})
 
     return output_graph
 
@@ -121,7 +133,11 @@ def parse_enums_and_structs(
         match type_name.split("::"):
             case ["Uint256"]:  # Old Syntax
                 continue
-            case ["core", "array" | "integer" | "bool" | "option", *_]:
+            case [
+                "core" | "@core",
+                "array" | "integer" | "bool" | "option" | "zeroable",
+                *_,
+            ]:
                 # Automatically parses Array/Span, u256, bool, and Option types as StarknetCoreType
                 continue
 
@@ -282,6 +298,11 @@ def _parse_type(  # pylint: disable=too-many-return-statements
         # Matches 'core::option::Option::*'
         case ["option", "Option", *_]:
             return StarknetOption(
+                _parse_type(extract_inner_type(abi_type), custom_types)
+            )
+
+        case ["zeroable", "NonZero", *_]:
+            return StarknetNonZero(
                 _parse_type(extract_inner_type(abi_type), custom_types)
             )
 

@@ -5,6 +5,7 @@ from nethermind.starknet_abi.abi_types import (
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
+    StarknetNonZero,
     StarknetOption,
     StarknetStruct,
     StarknetTuple,
@@ -108,7 +109,7 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
         )
 
 
-def decode_from_types(
+def decode_from_types(  # pylint: disable=too-many-branches, too-many-locals
     types: Sequence[StarknetType],
     calldata: list[int],
 ) -> list[Any]:
@@ -183,6 +184,14 @@ def decode_from_types(
                         for tuple_member in starknet_type.members
                     )
                 )
+                continue
+
+            if isinstance(starknet_type, StarknetNonZero):
+                decoded = decode_from_types([starknet_type.inner_type], calldata)[0]
+
+                if decoded == 0:
+                    raise ValueError("Zero Value Encoded in StarknetNonZero")
+                output_data.append(decoded)
                 continue
 
             raise TypeError(f"Cannot Decode Calldata for Type: {starknet_type}")

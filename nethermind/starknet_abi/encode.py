@@ -5,6 +5,7 @@ from nethermind.starknet_abi.abi_types import (
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
+    StarknetNonZero,
     StarknetOption,
     StarknetStruct,
     StarknetTuple,
@@ -126,7 +127,7 @@ def encode_core_type(  # pylint: disable=too-many-return-statements,too-many-bra
         raise TypeEncodeError(assert_err)
 
 
-def encode_from_types(  # pylint: disable=too-many-branches
+def encode_from_types(  # pylint: disable=too-many-branches, too-many-locals
     types: Sequence[StarknetType],
     values: list[Any],
 ) -> list[int]:
@@ -186,6 +187,14 @@ def encode_from_types(  # pylint: disable=too-many-branches
                 assert isinstance(encode_value, tuple), f"{encode_value} cannot be encoded into a StarknetTuple"
                 for tuple_type, tuple_value in zip(encode_type.members, encode_value):
                     encoded_calldata += encode_from_types([tuple_type], [tuple_value])
+                continue
+
+            if isinstance(encode_type, StarknetNonZero):
+                encoded_nonzero = encode_from_types([encode_type.inner_type], [encode_value])
+
+                assert encoded_nonzero != 0, f"Zero Value {encode_value} Cannot encode to StarknetNonZero"
+
+                encoded_calldata += encoded_nonzero
                 continue
 
             raise TypeError(

@@ -179,6 +179,27 @@ class StarknetOption:
 
 
 @dataclass(slots=True)
+class StarknetNonZero:
+    """Dataclass Represent a Starknet NonZero Type"""
+
+    inner_type: "StarknetType"
+
+    def id_str(self):
+        """
+        Returns Inner Type String wrapped with NonZero[]
+
+        .. doctest::
+
+            >>> from nethermind.starknet_abi.abi_types import StarknetNonZero, StarknetCoreType
+            >>> uint_non_zero = StarknetNonZero(StarknetCoreType.U128)
+            >>> uint_non_zero.id_str()
+            'NonZero[U128]'
+
+        """
+        return f"NonZero[{self.inner_type.id_str()}]"
+
+
+@dataclass(slots=True)
 class StarknetEnum:
     """
     Represents a StarknetEnum with its name and ordered variants
@@ -294,6 +315,7 @@ StarknetType = Union[
     StarknetArray,
     StarknetStruct,
     StarknetEnum,
+    StarknetNonZero,
 ]
 
 
