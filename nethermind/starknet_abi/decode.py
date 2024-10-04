@@ -12,6 +12,7 @@ from nethermind.starknet_abi.abi_types import (
     StarknetType,
 )
 from nethermind.starknet_abi.exceptions import InvalidCalldataError, TypeDecodeError
+from nethermind.starknet_abi.utils import STARK_FIELD
 
 # Disable linter line breaks to make assert statements more readable
 # fmt: off
@@ -51,7 +52,22 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
                 assert 0 <= value <= decode_type.max_value(), f"{value} exceeds {decode_type} Max Range"
                 return value
 
-            case StarknetCoreType.U256:
+            case (
+                StarknetCoreType.I8
+                | StarknetCoreType.I16
+                | StarknetCoreType.I32
+                | StarknetCoreType.I64
+                | StarknetCoreType.I128
+            ):
+                value = calldata.pop(0)
+
+                if value > decode_type.max_value():
+                    value -= STARK_FIELD
+
+                assert decode_type.min_value() <= value <= decode_type.max_value()
+                return value
+
+            case StarknetCoreType.U256:  # Separate out U256 and U512.  These are called enough to inline
                 low = calldata.pop(0)
                 high = calldata.pop(0)
 
@@ -60,6 +76,21 @@ def decode_core_type(  # pylint: disable=too-many-return-statements
                 uint_256 = (high << 128) + low
 
                 return uint_256
+
+            case StarknetCoreType.U512:
+                word_0 = calldata.pop(0)
+                word_1 = calldata.pop(0)
+                word_2 = calldata.pop(0)
+                word_3 = calldata.pop(0)
+
+                assert 0 <= word_0 < 2 ** 128, "Word 0 Exceeds U128 Range"  # Sloppy, but better than a loop
+                assert 0 <= word_1 < 2 ** 128, "Word 1 Exceeds U128 Range"
+                assert 0 <= word_2 < 2 ** 128, "Word 2 Exceeds U128 Range"
+                assert 0 <= word_3 < 2 ** 128, "Word 3 Exceeds U128 Range"
+
+                uint_512 = (word_3 << 384) + (word_2 << 256) + (word_1 << 128) + word_0
+
+                return uint_512
 
             case StarknetCoreType.Bool:
                 bool_val = calldata.pop(0)

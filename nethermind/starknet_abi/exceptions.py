@@ -54,8 +54,12 @@ class TypeEncodeError(Exception):
         >>> encode_from_types([StarknetCoreType.U16], [2**17])
         Traceback (most recent call last):
         ...
-        nethermind.starknet_abi.exceptions.TypeEncodeError: Integer 131072 is out of range for StarknetCoreType.U16
+        nethermind.starknet_abi.exceptions.TypeEncodeError: Unsigned Integer 131072 is out of range for StarknetCoreType.U16
 
+        >>> encode_from_types([StarknetCoreType.I8], [-129])
+        Traceback (most recent call last):
+        ...
+        nethermind.starknet_abi.exceptions.TypeEncodeError: Signed Integer -129 is out of range for StarknetCoreType.I8
     """
 
 
