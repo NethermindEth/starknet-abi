@@ -1,5 +1,7 @@
 from Crypto.Hash import keccak
 
+STARK_FIELD = (2**251) + (17 * (2**192)) + 1
+
 
 def starknet_keccak(data: bytes) -> bytes:
     """

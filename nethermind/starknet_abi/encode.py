@@ -12,6 +12,7 @@ from nethermind.starknet_abi.abi_types import (
     StarknetType,
 )
 from nethermind.starknet_abi.exceptions import TypeEncodeError
+from nethermind.starknet_abi.utils import STARK_FIELD
 
 # Disables Assert statements from being formatted into multi-line messes
 # fmt: off
@@ -54,17 +55,36 @@ def encode_core_type(  # pylint: disable=too-many-return-statements,too-many-bra
                 | StarknetCoreType.U128
             ):
                 assert isinstance(value, int), f"Cannot Encode Non-Integer Value '{value!r}' to {encode_type}"
-                assert 0 <= value <= encode_type.max_value(), f"Integer {value!r} is out of range for {encode_type}"
+                assert 0 <= value <= encode_type.max_value(), f"Unsigned Integer {value!r} is out of range for {encode_type}"
 
                 return [value]
 
-            case StarknetCoreType.U256:
+            case (
+                StarknetCoreType.I8
+                | StarknetCoreType.I16
+                | StarknetCoreType.I32
+                | StarknetCoreType.I64
+                | StarknetCoreType.I128
+            ):
+                assert isinstance(value, int), f"Cannot Encode Integer Value '{value!r}' to {encode_type}"
+                assert encode_type.min_value() <= value <= encode_type.max_value(), f"Signed Integer {value!r} is out of range for {encode_type}"
+
+                if value >= 0:
+                    return [value]
+                return [STARK_FIELD + value]
+
+            case StarknetCoreType.U256 | StarknetCoreType.U512:
                 assert isinstance(value, int), f"Cannot Encode Non-Integer Value '{value!r}' to {encode_type}"
                 assert 0 <= value <= encode_type.max_value(), f"Integer {value!r} is out of range for {encode_type}"
+                split_words = 2 if encode_type == StarknetCoreType.U256 else 4
+                encoded = []
 
-                high = value >> 128
-                low = value & ((1 << 128) - 1)
-                return [low, high]
+                big_uint = value
+                for _ in range(split_words):
+                    encoded.append(big_uint & ((1 << 128) - 1))
+                    big_uint >>= 128
+
+                return encoded
 
             case StarknetCoreType.Bool:
                 assert isinstance(value, bool), f"Cannot Encode Non-Boolean Value '{value!r}' to {encode_type}"
