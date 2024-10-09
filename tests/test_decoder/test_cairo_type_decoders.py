@@ -11,10 +11,14 @@ from nethermind.starknet_abi.abi_types import (
 )
 from nethermind.starknet_abi.decode import decode_from_types
 from nethermind.starknet_abi.encode import encode_from_types
+from nethermind.starknet_abi.exceptions import TypeDecodeError, TypeEncodeError
+from nethermind.starknet_abi.utils import STARK_FIELD
+
+U128_MAX = 2**128 - 1
 
 
 @pytest.mark.parametrize(
-    ["starknet_type", "calldata", "decoded"],
+    ("starknet_type", "calldata", "decoded"),
     [
         (StarknetArray(StarknetCoreType.U256), [0], []),
         (StarknetArray(StarknetCoreType.U256), [2, 16, 0, 48, 0], [16, 48]),
@@ -35,6 +39,57 @@ def test_array_decoding(starknet_type, calldata, decoded):
     assert decoded_values[0] == decoded
     assert encoded_calldata == calldata
     assert len(_calldata) == 0
+
+
+@pytest.mark.parametrize(
+    ("starknet_type", "calldata", "decoded"),
+    [
+        (StarknetCoreType.U512, [250, 0, 0, 0], 250),
+        (StarknetCoreType.U512, [U128_MAX, U128_MAX, U128_MAX, U128_MAX], 2**512 - 1),
+        (StarknetCoreType.U256, [U128_MAX, U128_MAX], 2**256 - 1),
+        (StarknetCoreType.I32, [STARK_FIELD - 120], -120),
+        (StarknetCoreType.I64, [2**63 - 1], 2**63 - 1),
+        (
+            StarknetCoreType.U32,
+            [
+                2**32 - 2,
+            ],
+            2**32 - 2,
+        ),
+    ],
+)
+def test_decode_valid_int_types(starknet_type, calldata, decoded):
+    _calldata = calldata.copy()
+
+    decoded_values = decode_from_types([starknet_type], _calldata)
+    encoded_calldata = encode_from_types([starknet_type], [decoded])
+
+    assert decoded_values[0] == decoded
+    assert len(decoded_values) == 1
+    assert encoded_calldata == calldata
+
+    assert len(_calldata) == 0
+
+
+@pytest.mark.parametrize(
+    ("starknet_type", "calldata", "encode_val"),
+    [
+        (StarknetCoreType.U32, [2**32], 2**32),
+        (StarknetCoreType.U64, [2**64], 2**64),
+        (StarknetCoreType.U512, [2**128, 0, 0, 0], 2**512),
+        (StarknetCoreType.I32, [2**31], 2**31),
+        (StarknetCoreType.I64, [STARK_FIELD - (2**63 + 1)], (-1 * (2**63)) - 1),
+    ],
+)
+def test_encode_out_of_range_types(starknet_type, calldata, encode_val):
+
+    with pytest.raises(TypeEncodeError):
+        encode_from_types([starknet_type], [encode_val])
+
+    _calldata = calldata.copy()
+
+    with pytest.raises(TypeDecodeError):
+        decode_from_types([starknet_type], _calldata)
 
 
 @pytest.mark.parametrize(
@@ -65,7 +120,7 @@ def test_valid_bool_values(calldata, decoded):
         ([2, 0, 300, 300, 0], {"c": {"my_option": 300, "my_uint": 300}}),
     ],
 )
-def test_enum_type_serializer(calldata, decoded):
+def test_enum_type_encoder(calldata, decoded):
     varied_type_enum = StarknetEnum(
         name="Enum A",
         variants=[
@@ -163,7 +218,7 @@ def test_hex_types(starknet_type, decoded, calldata):
         (StarknetOption(StarknetCoreType.U256), None, [1]),
     ],
 )
-def test_option_serializer(starknet_type, decoded, calldata):
+def test_option_encoder(starknet_type, decoded, calldata):
     _calldata = calldata.copy()
 
     decoded_values = decode_from_types([starknet_type], _calldata)
@@ -215,7 +270,7 @@ def test_option_serializer(starknet_type, decoded, calldata):
         ),
     ],
 )
-def test_struct_serializer_valid_values(struct_type, calldata, decoded):
+def test_struct_encoder_valid_values(struct_type, calldata, decoded):
     _calldata = calldata.copy()
 
     decoded_values = decode_from_types([struct_type], _calldata)

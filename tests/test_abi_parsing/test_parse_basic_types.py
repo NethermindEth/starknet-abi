@@ -7,18 +7,27 @@ from nethermind.starknet_abi.abi_types import (
     StarknetTuple,
 )
 from nethermind.starknet_abi.parse import _parse_type
+from nethermind.starknet_abi.utils import starknet_keccak
 
 EMPTY_STRUCT: dict[str, StarknetStruct | StarknetEnum] = {}
 
 
 def test_parse_int_types():
-    assert _parse_type("core::integer::u256", EMPTY_STRUCT) == StarknetCoreType.U256
     assert _parse_type("core::integer::u128", EMPTY_STRUCT) == StarknetCoreType.U128
     assert _parse_type("core::integer::u64", EMPTY_STRUCT) == StarknetCoreType.U64
     assert _parse_type("core::integer::u32", EMPTY_STRUCT) == StarknetCoreType.U32
     assert _parse_type("core::integer::u16", EMPTY_STRUCT) == StarknetCoreType.U16
     assert _parse_type("core::integer::u8", EMPTY_STRUCT) == StarknetCoreType.U8
+
+    assert _parse_type("core::integer::i8", EMPTY_STRUCT) == StarknetCoreType.I8
+    assert _parse_type("core::integer::i16", EMPTY_STRUCT) == StarknetCoreType.I16
+    assert _parse_type("core::integer::i32", EMPTY_STRUCT) == StarknetCoreType.I32
+    assert _parse_type("core::integer::i64", EMPTY_STRUCT) == StarknetCoreType.I64
+    assert _parse_type("core::integer::i128", EMPTY_STRUCT) == StarknetCoreType.I128
+
     assert _parse_type("Uint256", EMPTY_STRUCT) == StarknetCoreType.U256
+    assert _parse_type("core::integer::u256", EMPTY_STRUCT) == StarknetCoreType.U256
+    assert _parse_type("core::integer::u512", EMPTY_STRUCT) == StarknetCoreType.U512
 
 
 def test_parse_address_types():
@@ -34,6 +43,11 @@ def test_parse_address_types():
         _parse_type("core::starknet::eth_address::EthAddress", EMPTY_STRUCT)
         == StarknetCoreType.EthAddress
     )
+    assert (
+        _parse_type("core::starknet::storage_access::StorageAddress", EMPTY_STRUCT)
+        == StarknetCoreType.StorageAddress
+    )
+    assert _parse_type("core::bytes_31::bytes31", EMPTY_STRUCT) == StarknetCoreType.Bytes31
 
 
 def test_parse_felts():
@@ -56,6 +70,10 @@ def test_parse_array():
     assert _parse_type("core::array::Array::<core::bool>", EMPTY_STRUCT) == StarknetArray(
         StarknetCoreType.Bool
     )
+
+    assert _parse_type(
+        "core::array::Array::<core::bytes_31::bytes31>", EMPTY_STRUCT
+    ) == StarknetArray(StarknetCoreType.Bytes31)
 
 
 def test_parse_option():

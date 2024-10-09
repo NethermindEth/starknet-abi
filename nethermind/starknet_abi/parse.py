@@ -1,6 +1,6 @@
+import graphlib
 import re
 from collections import defaultdict
-from graphlib import TopologicalSorter
 from typing import Any
 
 from nethermind.starknet_abi.abi_types import (
@@ -42,10 +42,18 @@ STARKNET_CORE_TYPES = {
     "core::integer::u128",
     "core::integer::u64",
     "core::integer::u32",
+    "core::integer::usize",
     "core::integer::u16",
     "core::integer::u8",
+    "core::integer::i128",
+    "core::integer::i64",
+    "core::integer::i32",
+    "core::integer::i16",
+    "core::integer::i8",
     "core::felt252",
     "core::bool",
+    "core::bytes_31::bytes31",
+    "core::starknet::storage_access::StorageAddress",
     "core::starknet::contract_address::ContractAddress",
     "core::starknet::class_hash::ClassHash",
     "core::starknet::eth_address::EthAddress",
@@ -68,11 +76,19 @@ def _build_type_graph(type_defs: list[dict]) -> dict[str, set[str]]:
             if type_str in STARKNET_CORE_TYPES:
                 continue
 
-            if (
-                type_str.startswith(("core::array", "@core::array"))
-                and extract_inner_type(type_str) in STARKNET_CORE_TYPES
-            ):
-                continue
+            if type_str.startswith(("core::array", "@core::array")):  # Handle Arrays
+                if extract_inner_type(type_str) not in STARKNET_CORE_TYPES:
+                    ref_types.add(
+                        extract_inner_type(type_str)
+                    )  # Add inner type of array as dependency
+
+                continue  # If inner type of array in core types, continue
+
+            if type_str.startswith("("):
+                tuple_vals = _extract_tuple_types(type_str)
+                tuple_ref_types = _flatten_tuple_types(tuple_vals)
+
+                ref_types.update(tuple_ref_types - STARKNET_CORE_TYPES)
 
             ref_types.add(type_str)
 
@@ -92,7 +108,15 @@ def topo_sort_type_defs(type_defs: list[dict]) -> list[dict]:
     :param type_defs:
     """
     type_graph = _build_type_graph(type_defs)
-    sorted_defs = TopologicalSorter(type_graph).static_order()
+
+    try:
+        sorted_defs = graphlib.TopologicalSorter(type_graph).static_order()
+        sorted_defs = list(sorted_defs)  # Unwrap iterator into list to catch any CycleErrors
+    except graphlib.CycleError as e:
+        error_str = str(e).replace("('nodes are in a cycle', ", "")
+        raise InvalidAbiError(  # pylint: disable=raise-missing-from
+            f"Cyclic Struct Dependencies in ABI: {error_str[:-1]}"
+        )
 
     try:
         sorted_type_def_json = []
@@ -170,13 +194,19 @@ def _parse_enum(
     )
 
 
-def _parse_tuple(
-    abi_type: str, custom_types: dict[str, StarknetStruct | StarknetEnum]
-) -> StarknetTuple:
+def _extract_tuple_types(tuple_abi_type: str) -> list[str | list[Any]]:
     """
-    :param abi_type:
-    :param custom_types:
+    Parse a tuple type string into a nested structure of the tuple types.  Needs to be able to handle
+    nested tuples, as well as named tuples
+
+    .. doctest::
+        >>> from nethermind.starknet_abi.parse import _extract_tuple_types
+        >>> _extract_tuple_types("(core::integer::u64, core::integer::i128)")
+        ['core::integer::u64', 'core::integer::i128']
+        >>> _extract_tuple_types("(core::integer::u64, (core::integer::u16, core::integer::u16))")
+        ['core::integer::u64', ['core::integer::u16', 'core::integer::u16']]
     """
+    # Begin the spaghetti...
 
     def _is_named_tuple(type_str):
         match = re.search(r"(?<!:):(?!:)", type_str)
@@ -186,9 +216,9 @@ def _parse_tuple(
         return False
 
     # Remove Outer Parentheses & Whitespace
-    stripped_tuple = abi_type[1:-1].replace(" ", "")
+    stripped_tuple = tuple_abi_type[1:-1].replace(" ", "")
 
-    output_types = []
+    output_types: list[str | list[Any]] = []
     parenthesis_cache = []  # Tracks tuple opens and closes
     type_cache = []  # Tracks contents for sub-tuples
 
@@ -203,13 +233,13 @@ def _parse_tuple(
 
         if parenthesis_cache:  # Currently Parsing Types inside Nested Tuple
             type_cache.append(type_string)
+
         else:  # Append Types To Root Tuple
-            if _is_named_tuple(type_string):
-                output_types.append(
-                    _parse_type(type_string[_is_named_tuple(type_string) + 1 :], custom_types)
-                )
-            else:
-                output_types.append(_parse_type(type_string, custom_types))
+            output_types.append(
+                type_string
+                if not _is_named_tuple(type_string)
+                else type_string[_is_named_tuple(type_string) + 1 :]
+            )
 
         if tuple_close:
             for _ in range(tuple_close):
@@ -217,9 +247,60 @@ def _parse_tuple(
 
             if len(parenthesis_cache) == 0:
                 # Final tuple close detected, add new tuple to output types
-                output_types.append(_parse_tuple(",".join(type_cache), custom_types))
+                output_types.append(_extract_tuple_types(",".join(type_cache)))
 
-    return StarknetTuple(output_types)
+    return output_types
+
+
+def _flatten_tuple_types(tuple_types: list[str | list]) -> set[str]:
+    """
+    Flatten a nested list of tuple datatypes into a set of abi datatypes.
+
+    .. doctest::
+        >>> from nethermind.starknet_abi.parse import _flatten_tuple_types
+        >>> sorted(_flatten_tuple_types(["core::bool", "core::integer::u8", ["core::bool", "core::felt252"]]))
+        ['core::bool', 'core::felt252', 'core::integer::u8']
+    """
+    output = set()
+    for type_ in tuple_types:
+        if isinstance(type_, list):
+            output.update(_flatten_tuple_types(type_))
+        else:
+            output.add(type_)
+
+    return output
+
+
+def _parse_tuple(
+    abi_type: str, custom_types: dict[str, StarknetStruct | StarknetEnum]
+) -> StarknetTuple:
+    """
+    :param abi_type:  ABI type string
+    :param custom_types:  Custom Struct Definitions for ABI
+
+    .. doctest::
+        >>> from nethermind.starknet_abi.parse import _parse_tuple
+        >>> _parse_tuple("(core::integer::u64, core::integer::i128)", {})
+        StarknetTuple(members=[StarknetCoreType.U64, StarknetCoreType.I128])
+
+        >>> _parse_tuple("((core::array::Array::<core::integer::u8>, core::integer::u64), core::felt252)", {})
+        StarknetTuple(members=[StarknetTuple(members=[StarknetArray(inner_type=StarknetCoreType.U8), StarknetCoreType.U64]), StarknetCoreType.Felt])
+    """
+
+    def _parse_tuple_types(types: list[str | list]) -> list[StarknetType]:
+        output = []
+
+        for type_ in types:
+            if isinstance(type_, str):
+                output.append(_parse_type(type_, custom_types))
+            if isinstance(type_, list):
+                output.append(StarknetTuple(_parse_tuple_types(type_)))
+
+        return output
+
+    tuple_type_strings = _extract_tuple_types(abi_type)
+
+    return StarknetTuple(_parse_tuple_types(tuple_type_strings))
 
 
 def extract_inner_type(abi_type: str) -> str:
