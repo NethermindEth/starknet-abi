@@ -16,7 +16,7 @@ def decoding_dispatcher() -> DecodingDispatcher:
         # fmt: on
     ]:
         abi_json = load_abi(abi_name, abi_version)
-        parsed_abi = StarknetAbi.from_json(abi_json, abi_name, class_hash)
+        parsed_abi = StarknetAbi.from_json(abi_json, class_hash, abi_name)
 
         dispatcher.add_abi(parsed_abi)
 

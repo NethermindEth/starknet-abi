@@ -110,12 +110,14 @@ class DecodingDispatcher:
         """
 
         function_ids = {}
-        for function in abi.functions.values():
+        abi_functions = list(abi.functions.values())
+        if abi.constructor:
+            abi_functions.append(abi.constructor)
+
+        for function in abi_functions:
             function_type_id = _id_hash(function.id_str())
             if function_type_id not in self.function_types:
-                self.function_types.update(
-                    {function_type_id: (function.inputs, function.outputs)}
-                )
+                self.function_types.update({function_type_id: (function.inputs, function.outputs)})
             function_ids.update(
                 {
                     function.signature[-8:]: FunctionDispatchInfo(
@@ -139,9 +141,7 @@ class DecodingDispatcher:
         for event in abi.events.values():
             event_type_id = _id_hash(event.id_str())
             if event_type_id not in self.event_types:
-                self.event_types.update(
-                    {event_type_id: (event.parameters, event.keys, event.data)}
-                )
+                self.event_types.update({event_type_id: (event.parameters, event.keys, event.data)})
 
             event_ids.update(
                 {
@@ -161,6 +161,9 @@ class DecodingDispatcher:
 
         :param abi:
         """
+
+        assert abi.class_hash, "class_hash must be specified to add ABI to DecodingDispatcher"
+
         class_id = abi.class_hash[-8:]
 
         class_dispatcher = ClassDispatcher(
@@ -195,9 +198,7 @@ class DecodingDispatcher:
 
         # Both function_dispatcher and function_type should throw if keys not found
         function_dispatcher = class_dispatcher.function_ids[function_selector[-8:]]
-        input_types, output_types = self.function_types[
-            function_dispatcher.decoder_reference
-        ]
+        input_types, output_types = self.function_types[function_dispatcher.decoder_reference]
         function_name, abi_name = (
             function_dispatcher.function_name,
             class_dispatcher.abi_name,
@@ -259,17 +260,13 @@ class DecodingDispatcher:
             return None
 
         if len(keys) == 0:
-            raise InvalidCalldataError(
-                "Events require at least 1 key parameter as the selector"
-            )
+            raise InvalidCalldataError("Events require at least 1 key parameter as the selector")
 
         event_selector = keys[0].to_bytes(length=32, byteorder="big")
 
         # These two should never fail if class_dispatcher is valid
         event_dispatcher = class_dispatcher.event_ids[event_selector[-8:]]
-        event_params, event_keys, event_data = self.event_types[
-            event_dispatcher.decoder_reference
-        ]
+        event_params, event_keys, event_data = self.event_types[event_dispatcher.decoder_reference]
 
         _data = data.copy()
         _keys = keys[1:].copy()  # Key[0] is the event signature
@@ -278,13 +275,9 @@ class DecodingDispatcher:
 
         for param in event_params:
             if param in event_data:
-                decoded_data.update(
-                    {param: decode_from_types([event_data[param]], _data)[0]}
-                )
+                decoded_data.update({param: decode_from_types([event_data[param]], _data)[0]})
             elif param in event_keys:
-                decoded_data.update(
-                    {param: decode_from_types([event_keys[param]], _keys)[0]}
-                )
+                decoded_data.update({param: decode_from_types([event_keys[param]], _keys)[0]})
             else:
                 raise TypeDecodeError(
                     f"Event Parameter {param} not present in Keys or Data for "

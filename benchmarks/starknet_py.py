@@ -39,9 +39,9 @@ def bench_simple_decode():
 
     parsed_abi = AbiParserV2(starknet_eth_abi).parse()
 
-    transfer_func = parsed_abi.interfaces[
-        "openzeppelin::token::erc20::interface::IERC20"
-    ].items["transfer"]
+    transfer_func = parsed_abi.interfaces["openzeppelin::token::erc20::interface::IERC20"].items[
+        "transfer"
+    ]
     transfer_input_serializer = serializer_for_payload(transfer_func.inputs)
 
     def _run_bench():
@@ -57,13 +57,9 @@ def bench_complex_decode():
     multi_route_swap_func = parsed_abi.interfaces["avnu::exchange::IExchange"].items[
         "multi_route_swap"
     ]
-    multi_route_swap_input_serializer = serializer_for_payload(
-        multi_route_swap_func.inputs
-    )
+    multi_route_swap_input_serializer = serializer_for_payload(multi_route_swap_func.inputs)
 
     def _run_bench():
-        deserialized = multi_route_swap_input_serializer.deserialize(
-            multi_route_swap_calldata
-        )
+        deserialized = multi_route_swap_input_serializer.deserialize(multi_route_swap_calldata)
 
     return _run_bench

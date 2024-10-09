@@ -46,9 +46,7 @@ def test_encode_invalid_enums_raises():
 def test_encode_invalid_felts():
     error_message = "\\d+ Does not Fit into Starknet Felt"
     with pytest.raises(TypeEncodeError, match=error_message):
-        encode_from_types(
-            [StarknetCoreType.Felt], [StarknetCoreType.Felt.max_value() + 1]
-        )
+        encode_from_types([StarknetCoreType.Felt], [StarknetCoreType.Felt.max_value() + 1])
 
     with pytest.raises(TypeEncodeError, match=error_message):
         encode_from_types(
@@ -73,9 +71,7 @@ def test_decode_extra_calldata():
 
 def test_decode_invalid_uint_values():
     low_error_message = "Could not decode StarknetCoreType.U256: Low Exceeds U128 Range"
-    high_error_message = (
-        "Could not decode StarknetCoreType.U256: High Exceeds U128 Range"
-    )
+    high_error_message = "Could not decode StarknetCoreType.U256: High Exceeds U128 Range"
 
     with pytest.raises(TypeDecodeError, match=low_error_message):
         decode_from_types([StarknetCoreType.U256], [MAX_U128 + 1, 0])

@@ -76,9 +76,7 @@ def test_enum_type_serializer(calldata, decoded):
                 StarknetStruct(
                     name="Struct A",
                     members=[
-                        AbiParameter(
-                            "my_option", StarknetOption(StarknetCoreType.U128)
-                        ),
+                        AbiParameter("my_option", StarknetOption(StarknetCoreType.U128)),
                         AbiParameter("my_uint", StarknetCoreType.U256),
                     ],
                 ),

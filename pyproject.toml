@@ -39,6 +39,7 @@ build-backend = "poetry.masonry.api"
 
 
 [tool.black]
+line-length = 100
 exclude = '''
 /(
     \.eggs

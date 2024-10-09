@@ -41,10 +41,7 @@ def test_struct_ordering():
     assert structs[2]["name"] == "src::replaceability_interface::EICData"
     assert structs[2]["type"] == "struct"
 
-    assert (
-        structs[3]["name"]
-        == "core::option::Option::<src::replaceability_interface::EICData>"
-    )
+    assert structs[3]["name"] == "core::option::Option::<src::replaceability_interface::EICData>"
     assert structs[3]["type"] == "enum"
 
     assert structs[4]["name"] == "core::bool"
@@ -65,24 +62,15 @@ def test_exclude_common_structs_and_enums():
         name="src::replaceability_interface::EICData",
         members=[
             AbiParameter(name="eic_hash", type=StarknetCoreType.ClassHash),
-            AbiParameter(
-                name="eic_init_data", type=StarknetArray(StarknetCoreType.Felt)
-            ),
+            AbiParameter(name="eic_init_data", type=StarknetArray(StarknetCoreType.Felt)),
         ],
     )
-    assert (
-        struct_dict["src::replaceability_interface::EICData"]
-        == expected_eic_data_struct
-    )
-    assert struct_dict[
-        "src::replaceability_interface::ImplementationData"
-    ] == StarknetStruct(
+    assert struct_dict["src::replaceability_interface::EICData"] == expected_eic_data_struct
+    assert struct_dict["src::replaceability_interface::ImplementationData"] == StarknetStruct(
         name="src::replaceability_interface::ImplementationData",
         members=[
             AbiParameter(name="impl_hash", type=StarknetCoreType.ClassHash),
-            AbiParameter(
-                name="eic_data", type=StarknetOption(expected_eic_data_struct)
-            ),
+            AbiParameter(name="eic_data", type=StarknetOption(expected_eic_data_struct)),
             AbiParameter(name="final", type=StarknetCoreType.Bool),
         ],
     )
@@ -109,9 +97,7 @@ def test_enum_parsing():
 def test_tuple_parsing():
     single_tuple = _parse_tuple("(core::felt252, core::bool)", {})
 
-    nested_tuple_1 = _parse_tuple(
-        "(core::felt252, (core::bool, core::integer::u256))", {}
-    )
+    nested_tuple_1 = _parse_tuple("(core::felt252, (core::bool, core::integer::u256))", {})
     nested_tuple_2 = _parse_tuple(
         "(core::felt252, ((core::integer::u16, core::integer::u32), core::bool), core::integer::u256)",
         {},

@@ -59,9 +59,7 @@ def _build_type_graph(type_defs: list[dict]) -> dict[str, set[str]]:
         referenced_types: list[str] = [
             member["type"]
             for member in (
-                type_def["members"]
-                if type_def["type"] == "struct"
-                else type_def["variants"]
+                type_def["members"] if type_def["type"] == "struct" else type_def["variants"]
             )
         ]
 
@@ -100,9 +98,7 @@ def topo_sort_type_defs(type_defs: list[dict]) -> list[dict]:
         sorted_type_def_json = []
         for sorted_type_name in sorted_defs:
             abi_definition = [
-                type_def
-                for type_def in type_defs
-                if type_def["name"] == sorted_type_name
+                type_def for type_def in type_defs if type_def["name"] == sorted_type_name
             ]
             # fmt: off
             assert len(abi_definition) != 0, f"Type {sorted_type_name} not defined in ABI"
@@ -152,15 +148,11 @@ def parse_enums_and_structs(
     return output_types
 
 
-def _parse_struct(
-    abi_struct: dict, type_context: dict[str, StarknetStruct | StarknetEnum]
-):
+def _parse_struct(abi_struct: dict, type_context: dict[str, StarknetStruct | StarknetEnum]):
     return StarknetStruct(
         name=abi_struct["name"],
         members=[
-            AbiParameter(
-                name=member["name"], type=_parse_type(member["type"], type_context)
-            )
+            AbiParameter(name=member["name"], type=_parse_type(member["type"], type_context))
             for member in abi_struct["members"]
         ],
     )
@@ -214,9 +206,7 @@ def _parse_tuple(
         else:  # Append Types To Root Tuple
             if _is_named_tuple(type_string):
                 output_types.append(
-                    _parse_type(
-                        type_string[_is_named_tuple(type_string) + 1 :], custom_types
-                    )
+                    _parse_type(type_string[_is_named_tuple(type_string) + 1 :], custom_types)
                 )
             else:
                 output_types.append(_parse_type(type_string, custom_types))
@@ -291,20 +281,14 @@ def _parse_type(  # pylint: disable=too-many-return-statements
 
         # Matches 'core::array::Array | Span::*'
         case ["array", "Array" | "Span", *_]:
-            return StarknetArray(
-                _parse_type(extract_inner_type(abi_type), custom_types)
-            )
+            return StarknetArray(_parse_type(extract_inner_type(abi_type), custom_types))
 
         # Matches 'core::option::Option::*'
         case ["option", "Option", *_]:
-            return StarknetOption(
-                _parse_type(extract_inner_type(abi_type), custom_types)
-            )
+            return StarknetOption(_parse_type(extract_inner_type(abi_type), custom_types))
 
         case ["zeroable", "NonZero", *_]:
-            return StarknetNonZero(
-                _parse_type(extract_inner_type(abi_type), custom_types)
-            )
+            return StarknetNonZero(_parse_type(extract_inner_type(abi_type), custom_types))
 
         case _:
             # If unknown type is defined in struct context, return struct
@@ -431,18 +415,12 @@ def parse_abi_event(
         custom_types=custom_types,
     )
 
-    event_kinds = {
-        abi_input["name"]: abi_input["kind"] for abi_input in event_parameters
-    }
+    event_kinds = {abi_input["name"]: abi_input["kind"] for abi_input in event_parameters}
     event_data = {
-        param.name: param.type
-        for param in decoded_params
-        if event_kinds[param.name] == "data"
+        param.name: param.type for param in decoded_params if event_kinds[param.name] == "data"
     }
     event_keys = {
-        param.name: param.type
-        for param in decoded_params
-        if event_kinds[param.name] == "key"
+        param.name: param.type for param in decoded_params if event_kinds[param.name] == "key"
     }
 
     return AbiEvent(

@@ -202,9 +202,7 @@ class AbiEvent:
             elif param in self.keys:
                 event_params.append(f"<{param}>:{self.keys[param].id_str()}")
             else:
-                raise TypeDecodeError(
-                    f"Event Parameter {param} not part of event keys or Data"
-                )
+                raise TypeDecodeError(f"Event Parameter {param} not part of event keys or Data")
 
         return f"Event({','.join(event_params)})"
 
@@ -224,13 +222,9 @@ class AbiEvent:
 
         for param in self.parameters:
             if param in self.data:
-                decoded_data.update(
-                    {param: decode_from_types([self.data[param]], _data)[0]}
-                )
+                decoded_data.update({param: decode_from_types([self.data[param]], _data)[0]})
             elif param in self.keys:
-                decoded_data.update(
-                    {param: decode_from_types([self.keys[param]], _keys)[0]}
-                )
+                decoded_data.update({param: decode_from_types([self.keys[param]], _keys)[0]})
             else:
                 raise TypeDecodeError(
                     f"Event Parameter {param} not present in Keys or Data for Event {self.name}"

@@ -18,9 +18,7 @@ def bench_setup():
     ]
 
     def _run_bench():
-        parsed_abi = StarknetAbi.from_json(
-            starknet_eth_abi, "starknet_eth", class_hash=b""
-        )
+        parsed_abi = StarknetAbi.from_json(starknet_eth_abi)
 
         transfer_func = parsed_abi.functions["transfer"].inputs
         calldata_copy = transfer_calldata.copy()
@@ -36,7 +34,7 @@ def bench_simple_decode():
         0x0,
     ]
 
-    parsed_abi = StarknetAbi.from_json(starknet_eth_abi, "starknet_eth", b"")
+    parsed_abi = StarknetAbi.from_json(starknet_eth_abi)
 
     transfer_func = parsed_abi.functions["transfer"].inputs
 
@@ -49,7 +47,7 @@ def bench_simple_decode():
 
 # https://voyager.online/tx/0x4335f58410d8e66309e67d25c12bc61b5bc4b4d1ada61ff1eb2f3a0cabbb3d2
 def bench_complex_decode():
-    parsed_abi = StarknetAbi.from_json(avnu_abi, "AVNU", b"")
+    parsed_abi = StarknetAbi.from_json(avnu_abi)
 
     multi_route_swap = parsed_abi.functions["multi_route_swap"].inputs
 

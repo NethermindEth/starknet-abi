@@ -46,9 +46,7 @@ def test_named_tuple_parsing():
     parsed_abi = StarknetAbi.from_json(
         abi_json,
         "legacy_named_tuple",
-        bytes.fromhex(
-            "0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"
-        ),
+        bytes.fromhex("0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"),
     )
 
     xor_inputs = parsed_abi.functions["xor_counters"].inputs
@@ -58,9 +56,7 @@ def test_named_tuple_parsing():
     assert input_type.name == "IndexAndValues"
     assert input_type.members == [
         AbiParameter("index", StarknetCoreType.Felt),
-        AbiParameter(
-            "values", StarknetTuple([StarknetCoreType.Felt, StarknetCoreType.Felt])
-        ),
+        AbiParameter("values", StarknetTuple([StarknetCoreType.Felt, StarknetCoreType.Felt])),
     ]
 
 
@@ -70,9 +66,7 @@ def test_storage_address_parsing():
     parsed_abi = StarknetAbi.from_json(
         abi_json,
         "storage_address",
-        bytes.fromhex(
-            "0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"
-        ),
+        bytes.fromhex("0484c163658bcce5f9916f486171ac60143a92897533aa7ff7ac800b16c63311"),
     )
 
     storage_function = parsed_abi.functions["storage_read"]

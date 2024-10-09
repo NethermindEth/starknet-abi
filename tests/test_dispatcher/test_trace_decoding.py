@@ -8,12 +8,10 @@ def test_legacy_trace_result():
     # Funnction: __execute__() -> ([felt])
     dispatcher = DecodingDispatcher()
 
-    abi_class = bytes.fromhex(
-        "033434ad846cdd5f23eb73ff09fe6fddd568284a0fb7d1be20ee482f044dabe2"
-    )
+    abi_class = bytes.fromhex("033434ad846cdd5f23eb73ff09fe6fddd568284a0fb7d1be20ee482f044dabe2")
     abi_json = load_abi("argent_v0", 1)
 
-    argent_abi = StarknetAbi.from_json(abi_json, "argent_v0", abi_class)
+    argent_abi = StarknetAbi.from_json(abi_json, abi_class, "argent_v0")
 
     dispatcher.add_abi(argent_abi)
 
@@ -49,9 +47,7 @@ def test_legacy_trace_result():
     ]
     result = [0x01, 0x046CB2, 0x022EE84C7A1290, 0x5B, 0x00]
 
-    selector = bytes.fromhex(
-        "015d40a3d6ca2ac30f4031e42be28da9b056fef9bb7357ac5e85627ee876e5ad"
-    )
+    selector = bytes.fromhex("015d40a3d6ca2ac30f4031e42be28da9b056fef9bb7357ac5e85627ee876e5ad")
 
     decoding_res = dispatcher.decode_function(calldata, result, selector, abi_class)
 

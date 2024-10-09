@@ -50,21 +50,21 @@ def test_parse_bool():
 
 
 def test_parse_array():
-    assert _parse_type(
-        "core::array::Array::<core::integer::u256>", EMPTY_STRUCT
-    ) == StarknetArray(StarknetCoreType.U256)
-    assert _parse_type(
-        "core::array::Array::<core::bool>", EMPTY_STRUCT
-    ) == StarknetArray(StarknetCoreType.Bool)
+    assert _parse_type("core::array::Array::<core::integer::u256>", EMPTY_STRUCT) == StarknetArray(
+        StarknetCoreType.U256
+    )
+    assert _parse_type("core::array::Array::<core::bool>", EMPTY_STRUCT) == StarknetArray(
+        StarknetCoreType.Bool
+    )
 
 
 def test_parse_option():
     assert _parse_type(
         "core::option::Option::<core::integer::u256>", EMPTY_STRUCT
     ) == StarknetOption(StarknetCoreType.U256)
-    assert _parse_type(
-        "core::option::Option::<core::bool>", EMPTY_STRUCT
-    ) == StarknetOption(StarknetCoreType.Bool)
+    assert _parse_type("core::option::Option::<core::bool>", EMPTY_STRUCT) == StarknetOption(
+        StarknetCoreType.Bool
+    )
 
 
 def test_legacy_types():
@@ -81,6 +81,4 @@ def test_parse_storage_address():
 
 
 def test_parse_bytes():
-    assert (
-        _parse_type("core::bytes_31::bytes31", EMPTY_STRUCT) == StarknetCoreType.Bytes31
-    )
+    assert _parse_type("core::bytes_31::bytes31", EMPTY_STRUCT) == StarknetCoreType.Bytes31

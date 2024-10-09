@@ -302,9 +302,7 @@ class StarknetStruct:
             '{version_hash:Felt,version:[U8]}'
 
         """
-        members_str = ",".join(
-            [f"{member.name}:{member.type.id_str()}" for member in self.members]
-        )
+        members_str = ",".join([f"{member.name}:{member.type.id_str()}" for member in self.members])
         return "{" + members_str + "}"
 
 

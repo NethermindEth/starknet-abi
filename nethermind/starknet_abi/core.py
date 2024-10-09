@@ -1,6 +1,6 @@
 import warnings
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any
 
 from nethermind.starknet_abi.abi_types import AbiParameter
 from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction, AbiInterface
@@ -22,26 +22,29 @@ class StarknetAbi:
     """
 
     abi_name: str | None
-    class_hash: bytes
+    class_hash: bytes | None
 
     functions: dict[str, AbiFunction]
     events: dict[str, AbiEvent]
 
-    constructor: Sequence[AbiParameter] | None
+    constructor: AbiFunction | None
     l1_handler: AbiFunction | None
 
     implemented_interfaces: dict[str, AbiInterface]
 
     @classmethod
     def from_json(
-        cls, abi_json: list[dict[str, Any]], abi_name: str, class_hash: bytes
+        cls,
+        abi_json: list[dict[str, Any]],
+        class_hash: bytes | None = None,
+        abi_name: str | None = None,
     ) -> "StarknetAbi":
         """
         Parse a StarknetABI From the JSON ABI of the class.
 
         :param abi_json:
-        :param abi_name:
         :param class_hash:
+        :param abi_name:
         """
         grouped_abi = group_abi_by_type(abi_json)
 
@@ -58,10 +61,7 @@ class StarknetAbi:
         defined_interfaces = [
             AbiInterface(
                 name=interface["name"],
-                functions=[
-                    parse_abi_function(func, defined_types)
-                    for func in interface["items"]
-                ],
+                functions=[parse_abi_function(func, defined_types) for func in interface["items"]],
             )
             for interface in grouped_abi["interface"]
         ]
@@ -72,9 +72,7 @@ class StarknetAbi:
         }
 
         for interface in defined_interfaces:
-            functions.update(
-                {function.name: function for function in interface.functions}
-            )
+            functions.update({function.name: function for function in interface.functions})
 
         parsed_abi_events = [
             parse_abi_event(event, defined_types) for event in grouped_abi["event"]
@@ -82,12 +80,17 @@ class StarknetAbi:
         events = {event.name: event for event in parsed_abi_events if event is not None}
 
         if len(grouped_abi.get("constructor", [])) == 1:
-            constructor = [
-                AbiParameter(
-                    name=param["name"], type=_parse_type(param["type"], defined_types)
-                )
-                for param in grouped_abi["constructor"][0]["inputs"]
-            ]
+            constructor = AbiFunction(
+                name="constructor",
+                inputs=[
+                    AbiParameter(
+                        name=param["name"],
+                        type=_parse_type(param["type"], defined_types),
+                    )
+                    for param in grouped_abi["constructor"][0]["inputs"]
+                ],
+                outputs=[],
+            )
         else:
             constructor = None
 
@@ -99,8 +102,7 @@ class StarknetAbi:
         implemented_interfaces = {
             interface.name: interface
             for interface in defined_interfaces
-            if interface.name
-            in [impl["interface_name"] for impl in grouped_abi["impl"]]
+            if interface.name in [impl["interface_name"] for impl in grouped_abi["impl"]]
         }
 
         return StarknetAbi(

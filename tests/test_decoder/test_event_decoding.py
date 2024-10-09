@@ -19,9 +19,7 @@ def test_decode_event():
     parsed_abi = StarknetAbi.from_json(
         abi_json,
         "erc20_key_events",
-        bytes.fromhex(
-            "0261ad90e1901833f794ee3d69816846f68ddb4fb7bb9ffec2d8f0c8608e298d"
-        ),
+        bytes.fromhex("0261ad90e1901833f794ee3d69816846f68ddb4fb7bb9ffec2d8f0c8608e298d"),
     )
 
     abi_event = parsed_abi.events["Approval"]
