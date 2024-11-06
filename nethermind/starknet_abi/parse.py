@@ -452,9 +452,13 @@ def parse_abi_function(
         types=[abi_input["type"] for abi_input in abi_function["inputs"]],
         custom_types=custom_types,
     )
-    parsed_outputs = parse_abi_types(
-        types=[abi_output["type"] for abi_output in abi_function["outputs"]],
-        custom_types=custom_types,
+    parsed_outputs = (
+        parse_abi_types(
+            types=[abi_output["type"] for abi_output in abi_function["outputs"]],
+            custom_types=custom_types,
+        )
+        if "outputs" in abi_function  # Abi Constructors can not have outputs
+        else []
     )
 
     return AbiFunction(

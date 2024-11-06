@@ -2,11 +2,9 @@ import warnings
 from dataclasses import dataclass
 from typing import Any
 
-from nethermind.starknet_abi.abi_types import AbiParameter
 from nethermind.starknet_abi.decoding_types import AbiEvent, AbiFunction, AbiInterface
 from nethermind.starknet_abi.exceptions import InvalidAbiError
 from nethermind.starknet_abi.parse import (
-    _parse_type,
     group_abi_by_type,
     parse_abi_event,
     parse_abi_function,
@@ -80,17 +78,7 @@ class StarknetAbi:
         events = {event.name: event for event in parsed_abi_events if event is not None}
 
         if len(grouped_abi.get("constructor", [])) == 1:
-            constructor = AbiFunction(
-                name="constructor",
-                inputs=[
-                    AbiParameter(
-                        name=param["name"],
-                        type=_parse_type(param["type"], defined_types),
-                    )
-                    for param in grouped_abi["constructor"][0]["inputs"]
-                ],
-                outputs=[],
-            )
+            constructor = parse_abi_function(grouped_abi["constructor"][0], defined_types)
         else:
             constructor = None
 

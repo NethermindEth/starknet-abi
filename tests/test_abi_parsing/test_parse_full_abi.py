@@ -140,6 +140,21 @@ def test_wildcard_size_syntax():
     assert parsed_abi_func.inputs[1].type == StarknetArray(StarknetCoreType.Felt)
 
 
+def test_wildcard_constructor():
+    argent_v0_abi = load_abi("argent_v0_proxy", 1)
+
+    abi_decoder = StarknetAbi.from_json(
+        argent_v0_abi,
+        bytes.fromhex("025ec026985a3bf9d0cc1fe17326b245dfdc3ff89b8fde106542a3ea56c5a918"),
+    )
+
+    assert abi_decoder.constructor.inputs == [
+        AbiParameter("implementation", StarknetCoreType.Felt),
+        AbiParameter("selector", StarknetCoreType.Felt),
+        AbiParameter("calldata", StarknetArray(StarknetCoreType.Felt)),
+    ]
+
+
 def test_no_struct_definition():
     abi_json = json.loads(NO_STRUCT_ABI_DEFINITION)
 

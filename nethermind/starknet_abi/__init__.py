@@ -1,4 +1,5 @@
 from nethermind.starknet_abi.abi_types import (
+    AbiParameter,
     StarknetArray,
     StarknetCoreType,
     StarknetEnum,
@@ -10,7 +11,6 @@ from nethermind.starknet_abi.core import (
     AbiEvent,
     AbiFunction,
     AbiInterface,
-    AbiParameter,
     StarknetAbi,
 )
 from nethermind.starknet_abi.decode import (
